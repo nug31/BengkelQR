@@ -1,0 +1,180 @@
+:root {
+  /* HSL Color Palette - Industrial/Workshop Theme */
+  --hue: 215;
+  --bg-dark: hsl(var(--hue), 25%, 10%);
+  --bg-card: hsl(var(--hue), 20%, 15%);
+  --bg-input: hsl(var(--hue), 20%, 20%);
+  
+  --text-primary: hsl(var(--hue), 10%, 95%);
+  --text-secondary: hsl(var(--hue), 10%, 70%);
+  --text-muted: hsl(var(--hue), 10%, 50%);
+
+  --primary: hsl(var(--hue), 90%, 60%);
+  --primary-hover: hsl(var(--hue), 90%, 70%);
+  
+  --accent-success: hsl(150, 60%, 45%);
+  --accent-warning: hsl(35, 90%, 60%);
+  --accent-danger: hsl(0, 70%, 55%);
+
+  --border: hsl(var(--hue), 20%, 25%);
+  --radius: 12px;
+  --header-height: 64px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Layout */
+.layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* Navigation */
+.navbar {
+  height: var(--header-height);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.nav-brand {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover, .nav-links a.active {
+  color: var(--text-primary);
+}
+
+/* Components */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  border-color: var(--primary);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--bg-dark);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.btn-outline:hover {
+  border-color: var(--primary);
+  background: var(--bg-input);
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+input, select, textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Status Badges */
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-good { background: rgba(0, 255, 128, 0.1); color: var(--accent-success); border: 1px solid var(--accent-success); }
+.badge-damaged { background: rgba(255, 165, 0, 0.1); color: var(--accent-warning); border: 1px solid var(--accent-warning); }
+.badge-maintenance { background: rgba(255, 68, 68, 0.1); color: var(--accent-danger); border: 1px solid var(--accent-danger); }
+
+/* Utilities */
+.text-xl { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+.text-muted { color: var(--text-muted); }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.mt-4 { margin-top: 1rem; }
