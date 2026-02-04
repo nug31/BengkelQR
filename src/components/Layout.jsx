@@ -25,10 +25,14 @@ const Header = () => {
 };
 
 const Layout = ({ children }) => {
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+    const isScanView = query.get('view') === 'scan';
+
     return (
         <div>
-            <Header />
-            <main className="layout">
+            {!isScanView && <Header />}
+            <main className="layout" style={{ paddingTop: isScanView ? '40px' : '' }}>
                 {children}
             </main>
         </div>

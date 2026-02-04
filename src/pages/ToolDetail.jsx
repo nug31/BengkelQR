@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
 import { QRCodeCanvas } from 'qrcode.react';
 import { ArrowLeft, Printer, Trash2, QrCode } from 'lucide-react';
@@ -7,6 +7,10 @@ import { ArrowLeft, Printer, Trash2, QrCode } from 'lucide-react';
 const ToolDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+    const isScanView = query.get('view') === 'scan';
+
     const { getToolById, deleteTool } = useInventory();
     const tool = getToolById(id);
     const [showQR, setShowQR] = useState(false);
@@ -17,8 +21,8 @@ const ToolDetail = () => {
         return <div className="text-muted">Tool not found</div>;
     }
 
-    // URL that will be encoded in the QR code
-    const qrUrl = `${window.location.origin}/tool/${tool.id}`;
+    // URL with ?view=scan for the QR code
+    const qrUrl = `${window.location.origin}/tool/${tool.id}?view=scan`;
 
     const handleDelete = () => {
         if (confirm('Are you sure you want to delete this tool?')) {
@@ -58,19 +62,21 @@ const ToolDetail = () => {
                     </div>
                 </div>
 
-                <div className="no-print mt-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', paddingTop: '30px', borderTop: '1px solid var(--border)' }}>
-                    <button onClick={() => navigate('/')} className="btn btn-outline">
-                        <ArrowLeft size={16} /> Dashboard
-                    </button>
-                    {!showQR && (
-                        <button onClick={() => setShowQR(true)} className="btn btn-outline">
-                            <QrCode size={16} /> Manage QR
+                {!isScanView && (
+                    <div className="no-print mt-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', paddingTop: '30px', borderTop: '1px solid var(--border)' }}>
+                        <button onClick={() => navigate('/')} className="btn btn-outline">
+                            <ArrowLeft size={16} /> Dashboard
                         </button>
-                    )}
-                    <button onClick={handleDelete} className="btn btn-outline" style={{ color: 'var(--accent-danger)', borderColor: 'var(--accent-danger)' }}>
-                        <Trash2 size={16} /> Delete
-                    </button>
-                </div>
+                        {!showQR && (
+                            <button onClick={() => setShowQR(true)} className="btn btn-outline">
+                                <QrCode size={16} /> Manage QR
+                            </button>
+                        )}
+                        <button onClick={handleDelete} className="btn btn-outline" style={{ color: 'var(--accent-danger)', borderColor: 'var(--accent-danger)' }}>
+                            <Trash2 size={16} /> Delete
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* QR Section */}
