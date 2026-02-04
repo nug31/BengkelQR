@@ -4,14 +4,14 @@
   --bg-dark: hsl(var(--hue), 25%, 10%);
   --bg-card: hsl(var(--hue), 20%, 15%);
   --bg-input: hsl(var(--hue), 20%, 20%);
-  
+
   --text-primary: hsl(var(--hue), 10%, 95%);
   --text-secondary: hsl(var(--hue), 10%, 70%);
   --text-muted: hsl(var(--hue), 10%, 50%);
 
   --primary: hsl(var(--hue), 90%, 60%);
   --primary-hover: hsl(var(--hue), 90%, 70%);
-  
+
   --accent-success: hsl(150, 60%, 45%);
   --accent-warning: hsl(35, 90%, 60%);
   --accent-danger: hsl(0, 70%, 55%);
@@ -70,7 +70,8 @@ body {
   transition: color 0.2s;
 }
 
-.nav-links a:hover, .nav-links a.active {
+.nav-links a:hover,
+.nav-links a.active {
   color: var(--text-primary);
 }
 
@@ -85,7 +86,7 @@ body {
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   border-color: var(--primary);
 }
 
@@ -142,7 +143,9 @@ label {
   font-size: 0.9rem;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   width: 100%;
   box-sizing: border-box;
   padding: 0.75rem;
@@ -154,7 +157,9 @@ input, select, textarea {
   font-size: 1rem;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
@@ -169,15 +174,44 @@ input:focus, select:focus, textarea:focus {
   text-transform: uppercase;
 }
 
-.badge-good { background: rgba(0, 255, 128, 0.1); color: var(--accent-success); border: 1px solid var(--accent-success); }
-.badge-damaged { background: rgba(255, 165, 0, 0.1); color: var(--accent-warning); border: 1px solid var(--accent-warning); }
-.badge-maintenance { background: rgba(255, 68, 68, 0.1); color: var(--accent-danger); border: 1px solid var(--accent-danger); }
+.badge-good {
+  background: rgba(0, 255, 128, 0.1);
+  color: var(--accent-success);
+  border: 1px solid var(--accent-success);
+}
+
+.badge-damaged {
+  background: rgba(255, 165, 0, 0.1);
+  color: var(--accent-warning);
+  border: 1px solid var(--accent-warning);
+}
+
+.badge-maintenance {
+  background: rgba(255, 68, 68, 0.1);
+  color: var(--accent-danger);
+  border: 1px solid var(--accent-danger);
+}
 
 /* Utilities */
-.text-xl { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
-.text-muted { color: var(--text-muted); }
-.flex-between { display: flex; justify-content: space-between; align-items: center; }
-.mt-4 { margin-top: 1rem; }
+.text-xl {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
 
 /* Tool Detail Layout */
 .detail-container {
@@ -185,12 +219,44 @@ input:focus, select:focus, textarea:focus {
   grid-template-columns: 1fr;
   gap: 30px;
   align-items: start;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 @media (min-width: 992px) {
-  .detail-container {
+  .detail-container.has-qr {
     grid-template-columns: 2fr 1fr;
+    max-width: 1200px;
   }
+}
+
+.minimal-info {
+  padding: 20px 0;
+}
+
+.minimal-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.minimal-field {
+  margin-bottom: 2rem;
+}
+
+.minimal-field label {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  text-transform: none;
+}
+
+.minimal-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
 }
 
 .qr-section {
@@ -203,28 +269,28 @@ input:focus, select:focus, textarea:focus {
   .no-print {
     display: none !important;
   }
-  
+
   body {
     background: white !important;
     color: black !important;
   }
-  
+
   .layout {
     padding: 0;
     margin: 0;
   }
-  
+
   .detail-container {
     display: block !important;
   }
-  
+
   .qr-section {
     display: flex !important;
     justify-content: center;
     position: static;
     margin-top: 40px;
   }
-  
+
   .card {
     border: none !important;
     box-shadow: none !important;

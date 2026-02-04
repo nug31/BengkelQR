@@ -32,75 +32,64 @@ const ToolDetail = () => {
     };
 
     return (
-        <div className="detail-container">
+        <div className={`detail-container ${showQR ? 'has-qr' : ''}`}>
             <div className="detail-main">
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }} className="no-print">
-                    <button onClick={() => navigate('/')} className="btn btn-outline" title="Back to Dashboard">
-                        <ArrowLeft size={16} /> Back
-                    </button>
-                    {!showQR && (
-                        <button onClick={() => setShowQR(true)} className="btn btn-outline" style={{ borderColor: 'var(--primary)', color: 'var(--primary)' }}>
-                            <QrCode size={16} /> Show QR Label
-                        </button>
-                    )}
+                <div className="minimal-info">
+                    <h1 className="minimal-title">{tool.name}</h1>
+
+                    <div className="minimal-field">
+                        <label>Category</label>
+                        <div className="minimal-value">{tool.category}</div>
+                    </div>
+
+                    <div className="minimal-field">
+                        <label>Condition</label>
+                        <div className="minimal-value">{tool.condition}</div>
+                    </div>
+
+                    <div className="minimal-field">
+                        <label>Purchase Date</label>
+                        <div className="minimal-value">{tool.purchaseDate}</div>
+                    </div>
+
+                    <div className="minimal-field">
+                        <label>Description</label>
+                        <p className="minimal-value">{tool.description || 'No description provided.'}</p>
+                    </div>
                 </div>
 
-                <div className="card">
-                    <div className="flex-between">
-                        <h1 className="text-xl" style={{ marginBottom: 0 }}>{tool.name}</h1>
-                        <span className={`badge ${tool.condition === 'Broken' ? 'badge-maintenance' : 'badge-good'}`}>
-                            {tool.status}
-                        </span>
-                    </div>
-
-                    <div style={{ marginTop: '20px', display: 'grid', gap: '15px' }}>
-                        <div>
-                            <label>Category</label>
-                            <div style={{ fontWeight: 500 }}>{tool.category}</div>
-                        </div>
-                        <div>
-                            <label>Condition</label>
-                            <div style={{ fontWeight: 500 }}>{tool.condition}</div>
-                        </div>
-                        <div>
-                            <label>Purchase Date</label>
-                            <div style={{ fontWeight: 500 }}>{tool.purchaseDate}</div>
-                        </div>
-                        <div>
-                            <label>Description</label>
-                            <p style={{ lineHeight: '1.6', color: 'var(--text-secondary)' }}>{tool.description || 'No description provided.'}</p>
-                        </div>
-                    </div>
-
-                    <div className="no-print" style={{ marginTop: '40px', borderTop: '1px solid var(--border)', paddingTop: '20px' }}>
-                        <button onClick={handleDelete} className="btn btn-outline" style={{ color: 'var(--accent-danger)', borderColor: 'var(--accent-danger)' }}>
-                            <Trash2 size={16} /> Delete Tool
+                <div className="no-print mt-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', paddingTop: '30px', borderTop: '1px solid var(--border)' }}>
+                    <button onClick={() => navigate('/')} className="btn btn-outline">
+                        <ArrowLeft size={16} /> Dashboard
+                    </button>
+                    {!showQR && (
+                        <button onClick={() => setShowQR(true)} className="btn btn-outline">
+                            <QrCode size={16} /> Manage QR
                         </button>
-                    </div>
+                    )}
+                    <button onClick={handleDelete} className="btn btn-outline" style={{ color: 'var(--accent-danger)', borderColor: 'var(--accent-danger)' }}>
+                        <Trash2 size={16} /> Delete
+                    </button>
                 </div>
             </div>
 
-            {/* QR Section - can be toggled or visible in print */}
+            {/* QR Section */}
             {(showQR) && (
-                <div className="qr-section">
+                <div className="qr-section no-print">
                     <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                        <div className="no-print" style={{ width: '100%', textAlign: 'right', marginBottom: '10px' }}>
+                        <div style={{ width: '100%', textAlign: 'right', marginBottom: '10px' }}>
                             <button onClick={() => setShowQR(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>Close</button>
                         </div>
                         <h3 className="text-xl">QR Code Label</h3>
-                        <p className="text-muted no-print" style={{ marginBottom: '20px' }}>Scan to view details</p>
-
                         <div style={{ background: 'white', padding: '15px', borderRadius: '8px', marginBottom: '10px' }} ref={qrRef}>
                             <QRCodeCanvas value={qrUrl} size={180} />
                         </div>
                         <div style={{ color: 'black', background: 'white', padding: '5px 10px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}>
                             {tool.name}
                         </div>
-
-                        <div className="no-print" style={{ marginTop: '20px', width: '100%' }}>
+                        <div style={{ marginTop: '20px', width: '100%' }}>
                             <button onClick={handlePrint} className="btn btn-primary" style={{ width: '100%' }}>
-                                <Printer size={18} />
-                                Print Label
+                                <Printer size={18} /> Print Label
                             </button>
                         </div>
                     </div>
