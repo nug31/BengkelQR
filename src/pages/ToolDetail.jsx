@@ -1,14 +1,15 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
 import { QRCodeCanvas } from 'qrcode.react';
-import { ArrowLeft, Printer, Trash2 } from 'lucide-react';
+import { ArrowLeft, Printer, Trash2, QrCode } from 'lucide-react';
 
 const ToolDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { getToolById, deleteTool } = useInventory();
     const tool = getToolById(id);
+    const [showQR, setShowQR] = useState(false);
 
     const qrRef = useRef();
 
@@ -27,16 +28,22 @@ const ToolDetail = () => {
     };
 
     const handlePrint = () => {
-        // Basic print logic - in a real app better to open a new window with print-specific CSS
         window.print();
     };
 
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px', alignItems: 'start' }}>
-            <div>
-                <button onClick={() => navigate('/')} className="btn btn-outline" style={{ marginBottom: '20px' }}>
-                    <ArrowLeft size={16} /> Back
-                </button>
+        <div className="detail-container">
+            <div className="detail-main">
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }} className="no-print">
+                    <button onClick={() => navigate('/')} className="btn btn-outline" title="Back to Dashboard">
+                        <ArrowLeft size={16} /> Back
+                    </button>
+                    {!showQR && (
+                        <button onClick={() => setShowQR(true)} className="btn btn-outline" style={{ borderColor: 'var(--primary)', color: 'var(--primary)' }}>
+                            <QrCode size={16} /> Show QR Label
+                        </button>
+                    )}
+                </div>
 
                 <div className="card">
                     <div className="flex-between">
@@ -65,7 +72,7 @@ const ToolDetail = () => {
                         </div>
                     </div>
 
-                    <div style={{ marginTop: '40px', borderTop: '1px solid var(--border)', paddingTop: '20px' }}>
+                    <div className="no-print" style={{ marginTop: '40px', borderTop: '1px solid var(--border)', paddingTop: '20px' }}>
                         <button onClick={handleDelete} className="btn btn-outline" style={{ color: 'var(--accent-danger)', borderColor: 'var(--accent-danger)' }}>
                             <Trash2 size={16} /> Delete Tool
                         </button>
@@ -73,22 +80,32 @@ const ToolDetail = () => {
                 </div>
             </div>
 
-            {/* QR Section */}
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                <h3 className="text-xl">QR Code</h3>
-                <p className="text-muted" style={{ marginBottom: '20px' }}>Scan to view details</p>
+            {/* QR Section - can be toggled or visible in print */}
+            {(showQR) && (
+                <div className="qr-section">
+                    <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                        <div className="no-print" style={{ width: '100%', textAlign: 'right', marginBottom: '10px' }}>
+                            <button onClick={() => setShowQR(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>Close</button>
+                        </div>
+                        <h3 className="text-xl">QR Code Label</h3>
+                        <p className="text-muted no-print" style={{ marginBottom: '20px' }}>Scan to view details</p>
 
-                <div style={{ background: 'white', padding: '15px', borderRadius: '8px' }} ref={qrRef}>
-                    <QRCodeCanvas value={qrUrl} size={200} />
-                </div>
+                        <div style={{ background: 'white', padding: '15px', borderRadius: '8px', marginBottom: '10px' }} ref={qrRef}>
+                            <QRCodeCanvas value={qrUrl} size={180} />
+                        </div>
+                        <div style={{ color: 'black', background: 'white', padding: '5px 10px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                            {tool.name}
+                        </div>
 
-                <div style={{ marginTop: '20px', width: '100%' }}>
-                    <button onClick={handlePrint} className="btn btn-primary" style={{ width: '100%' }}>
-                        <Printer size={18} />
-                        Print Label
-                    </button>
+                        <div className="no-print" style={{ marginTop: '20px', width: '100%' }}>
+                            <button onClick={handlePrint} className="btn btn-primary" style={{ width: '100%' }}>
+                                <Printer size={18} />
+                                Print Label
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };

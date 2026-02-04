@@ -178,3 +178,57 @@ input:focus, select:focus, textarea:focus {
 .text-muted { color: var(--text-muted); }
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
 .mt-4 { margin-top: 1rem; }
+
+/* Tool Detail Layout */
+.detail-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+@media (min-width: 992px) {
+  .detail-container {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.qr-section {
+  position: sticky;
+  top: 90px;
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .layout {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .detail-container {
+    display: block !important;
+  }
+  
+  .qr-section {
+    display: flex !important;
+    justify-content: center;
+    position: static;
+    margin-top: 40px;
+  }
+  
+  .card {
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+    color: black !important;
+  }
+}
