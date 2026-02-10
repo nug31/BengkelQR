@@ -11,6 +11,15 @@ export const InventoryProvider = ({ children }) => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
     return saved ? JSON.parse(saved) : [
       {
+        id: '3',
+        name: 'Four Gas Analyzer Qrotech QRO - 402',
+        category: 'Automotive Emission Analyzer',
+        condition: 'Good',
+        status: 'Available',
+        description: 'Alat uji gas emisi kendaraan berbahan bakar bensin. Heavy Duty dan High Accuracy. Mengukur Gas: CO, HC, Co2, O2, AFR, NOx (opsional). Metode: NDIR & Sel Elektrokimia. Repeatability: < 2% FS. Waktu respon: < 10 Detik. Koneksi: Port RS 232. Video: https://youtu.be/WNYdjNcq1KY',
+        purchaseDate: '2026-02-10'
+      },
+      {
         id: '1',
         name: 'Hammer Drill X500',
         category: 'Power Tools',
