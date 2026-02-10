@@ -39,6 +39,15 @@ const ToolDetail = () => {
         <div className={`detail-container ${showQR ? 'has-qr' : ''}`}>
             <div className="detail-main">
                 <div className="minimal-info">
+                    {tool.image && (
+                        <div style={{ marginBottom: '25px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)' }}>
+                            <img
+                                src={tool.image}
+                                alt={tool.name}
+                                style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }}
+                            />
+                        </div>
+                    )}
                     <h1 className="minimal-title">{tool.name}</h1>
 
                     <div className="minimal-field">
