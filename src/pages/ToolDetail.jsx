@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
 import { QRCodeCanvas } from 'qrcode.react';
-import { ArrowLeft, Printer, Trash2, QrCode } from 'lucide-react';
+import { ArrowLeft, Printer, Trash2, QrCode, Edit } from 'lucide-react';
 
 const ToolDetail = () => {
     const { id } = useParams();
@@ -80,6 +80,9 @@ const ToolDetail = () => {
                     <div className="no-print mt-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', paddingTop: '30px', borderTop: '1px solid var(--border)' }}>
                         <button onClick={() => navigate('/')} className="btn btn-outline">
                             <ArrowLeft size={16} /> Dashboard
+                        </button>
+                        <button onClick={() => navigate(`/edit/${tool.id}`)} className="btn btn-outline">
+                            <Edit size={16} /> Edit Tool
                         </button>
                         {!showQR && (
                             <button onClick={() => setShowQR(true)} className="btn btn-outline">
