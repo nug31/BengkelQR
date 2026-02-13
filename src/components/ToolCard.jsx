@@ -32,7 +32,10 @@ const ToolCard = ({ tool }) => {
                 </div>
 
                 <h3 style={{ margin: '15px 0 5px 0' }}>{tool.name}</h3>
-                <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '1.5rem' }}>{tool.category}</p>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '1.5rem' }}>
+                    <span className="badge" style={{ background: 'var(--bg-accent)', color: 'var(--text-muted)', fontSize: '0.7rem' }}>{tool.jurusan}</span>
+                    <p className="text-muted" style={{ fontSize: '0.9rem' }}>{tool.category}</p>
+                </div>
 
                 <div className="flex-between mt-4" style={{ borderTop: '1px solid var(--border)', paddingTop: '15px' }}>
                     <Link to={`/tool/${tool.id}`} className="btn btn-outline" style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', width: '100%', justifyContent: 'center' }}>

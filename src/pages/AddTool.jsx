@@ -10,6 +10,7 @@ const AddTool = () => {
     const [formData, setFormData] = useState({
         name: '',
         category: 'Hand Tools',
+        jurusan: 'TKR',
         condition: 'Good',
         status: 'Available',
         description: '',
@@ -111,6 +112,22 @@ const AddTool = () => {
                         </div>
 
                         <div className="form-group">
+                            <label>Jurusan</label>
+                            <select name="jurusan" value={formData.jurusan} onChange={handleChange}>
+                                <option value="TKR">TKR</option>
+                                <option value="TSM">TSM</option>
+                                <option value="Mesin">Teknik Mesin</option>
+                                <option value="Elind">Teknik Elind</option>
+                                <option value="Listrik">Teknik Listrik</option>
+                                <option value="Akuntansi">Akuntansi</option>
+                                <option value="Perhotelan">Perhotelan</option>
+                                <option value="TKI">TKI (Teknik Kimia Industri)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div className="form-group">
                             <label>Condition</label>
                             <select name="condition" value={formData.condition} onChange={handleChange}>
                                 <option>New</option>
@@ -119,16 +136,16 @@ const AddTool = () => {
                                 <option>Broken</option>
                             </select>
                         </div>
-                    </div>
 
-                    <div className="form-group">
-                        <label>Purchase Date</label>
-                        <input
-                            type="date"
-                            name="purchaseDate"
-                            value={formData.purchaseDate}
-                            onChange={handleChange}
-                        />
+                        <div className="form-group">
+                            <label>Purchase Date</label>
+                            <input
+                                type="date"
+                                name="purchaseDate"
+                                value={formData.purchaseDate}
+                                onChange={handleChange}
+                            />
+                        </div>
                     </div>
 
                     <div className="form-group">

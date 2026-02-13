@@ -51,6 +51,11 @@ const ToolDetail = () => {
                     <h1 className="minimal-title">{tool.name}</h1>
 
                     <div className="minimal-field">
+                        <label>Jurusan</label>
+                        <div className="minimal-value">{tool.jurusan}</div>
+                    </div>
+
+                    <div className="minimal-field">
                         <label>Category</label>
                         <div className="minimal-value">{tool.category}</div>
                     </div>
