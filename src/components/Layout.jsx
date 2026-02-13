@@ -1,9 +1,17 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Wrench, PlusCircle, LayoutDashboard } from 'lucide-react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { Wrench, PlusCircle, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Header = () => {
     const location = useLocation();
+    const navigate = useNavigate();
+    const { logout, getJurusan, isAdmin } = useAuth();
+    const jurusan = getJurusan();
+
+    const handleLogout = async () => {
+        await logout();
+        navigate('/login');
+    };
 
     return (
         <nav className="navbar">
@@ -12,6 +20,11 @@ const Header = () => {
                 <span>WorkshopQR</span>
             </Link>
             <div className="nav-links">
+                {jurusan && (
+                    <span className="badge badge-good no-print" style={{ fontSize: '0.75rem', padding: '4px 10px' }}>
+                        {isAdmin ? 'Admin' : jurusan}
+                    </span>
+                )}
                 <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
                     Dashboard
                 </Link>
@@ -19,6 +32,9 @@ const Header = () => {
                     <PlusCircle size={18} />
                     Add Tool
                 </Link>
+                <button onClick={handleLogout} className="btn btn-outline" style={{ padding: '8px', border: 'none' }} title="Logout">
+                    <LogOut size={18} />
+                </button>
             </div>
         </nav>
     );

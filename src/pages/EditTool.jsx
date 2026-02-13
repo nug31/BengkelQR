@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
+import { useAuth } from '../context/AuthContext';
 import { Save, ArrowLeft, Plus, Trash2 } from 'lucide-react';
 
 const EditTool = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { getToolById, updateTool } = useInventory();
+    const { getJurusan, isAdmin } = useAuth();
+    const userJurusan = getJurusan();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -24,6 +27,12 @@ const EditTool = () => {
     useEffect(() => {
         const tool = getToolById(id);
         if (tool) {
+            // Security check: Only allow editing if tool belongs to user's department or is admin
+            if (!isAdmin && tool.jurusan !== userJurusan) {
+                navigate('/');
+                return;
+            }
+
             setFormData({
                 name: tool.name || '',
                 category: tool.category || 'Hand Tools',
@@ -38,7 +47,7 @@ const EditTool = () => {
         } else {
             navigate('/');
         }
-    }, [id, getToolById, navigate]);
+    }, [id, getToolById, navigate, userJurusan, isAdmin]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -150,7 +159,12 @@ const EditTool = () => {
 
                         <div className="form-group">
                             <label>Jurusan</label>
-                            <select name="jurusan" value={formData.jurusan} onChange={handleChange}>
+                            <select
+                                name="jurusan"
+                                value={formData.jurusan}
+                                onChange={handleChange}
+                                disabled={!isAdmin}
+                            >
                                 <option value="TKR">TKR</option>
                                 <option value="TSM">TSM</option>
                                 <option value="Mesin">Teknik Mesin</option>

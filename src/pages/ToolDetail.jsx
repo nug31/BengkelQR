@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
+import { useAuth } from '../context/AuthContext';
 import { QRCodeCanvas } from 'qrcode.react';
-import { ArrowLeft, Printer, Trash2, QrCode, Edit, Download } from 'lucide-react';
+import { ArrowLeft, Printer, Trash2, QrCode, Edit, Download, Wrench } from 'lucide-react';
 
 const ToolDetail = () => {
     const { id } = useParams();
@@ -17,16 +18,19 @@ const ToolDetail = () => {
 
     const qrRef = useRef();
 
-    if (!tool) {
-        return <div className="text-muted">Tool not found</div>;
-    }
+    const { getJurusan, isAdmin } = useAuth();
+    const userJurusan = getJurusan();
 
-    // URL with ?view=scan for the QR code
-    const qrUrl = `${window.location.origin}/tool/${tool.id}?view=scan`;
+    // Security: Only owner or admin can edit/delete
+    const canManage = isAdmin || (tool?.jurusan === userJurusan);
 
-    const handleDelete = () => {
-        if (confirm('Are you sure you want to delete this tool?')) {
-            deleteTool(tool.id);
+    if (!tool) return null;
+
+    const qrUrl = window.location.origin + `/tool/${id}?view=scan`;
+
+    const handleDelete = async () => {
+        if (window.confirm('Are you sure you want to delete this tool?')) {
+            await deleteTool(id);
             navigate('/');
         }
     };
@@ -35,74 +39,90 @@ const ToolDetail = () => {
         window.print();
     };
 
-    // --- SCAN VIEW: PDF-like layout ---
+    // --- SCAN / PDF VIEW ---
     if (isScanView) {
         return (
-            <div className="scan-pdf-container">
-                <div className="scan-pdf-page">
-                    {/* Header */}
-                    <div className="scan-pdf-header">
-                        <div>
-                            <h1 className="scan-pdf-title">{tool.name}</h1>
-                            <p className="scan-pdf-subtitle">Jurusan: {tool.jurusan} | Kategori: {tool.category}</p>
+            <div className="layout scan-pdf-container">
+                <div className="scan-pdf-card">
+                    <header className="scan-pdf-header">
+                        <div className="scan-pdf-brand">
+                            <Wrench size={32} />
+                            <div>
+                                <h2>BENGKEL SEKOLAH</h2>
+                                <p>Sistem Manajemen Inventaris Alat</p>
+                            </div>
                         </div>
-                        <div className="scan-pdf-badge">
-                            <span className={`badge ${tool.condition === 'Broken' ? 'badge-maintenance' : tool.status === 'In Use' ? 'badge-damaged' : 'badge-good'}`}>
-                                {tool.condition === 'Broken' ? 'Maintenance' : tool.status === 'In Use' ? 'In Use' : 'Available'}
-                            </span>
+                        <div className="no-print">
+                            <button onClick={handlePrint} className="btn btn-primary">
+                                <Download size={18} /> Download/Print PDF
+                            </button>
                         </div>
+                    </header>
+
+                    <div className="scan-pdf-content">
+                        <div className="scan-pdf-main-row">
+                            <div className="scan-pdf-photo-section">
+                                {tool.image ? (
+                                    <img src={tool.image} alt={tool.name} className="scan-pdf-photo" />
+                                ) : (
+                                    <div className="scan-pdf-photo-placeholder">No Image</div>
+                                )}
+                            </div>
+
+                            <div className="scan-pdf-info-section">
+                                <h1 className="scan-pdf-title">{tool.name}</h1>
+
+                                <div className="scan-pdf-specs">
+                                    <div className="scan-pdf-spec-item">
+                                        <label>Jurusan</label>
+                                        <div className="scan-pdf-badge">{tool.jurusan}</div>
+                                    </div>
+                                    <div className="scan-pdf-spec-item">
+                                        <label>Kategori</label>
+                                        <div>{tool.category}</div>
+                                    </div>
+                                    <div className="scan-pdf-spec-item">
+                                        <label>Kondisi</label>
+                                        <div>{tool.condition}</div>
+                                    </div>
+                                    <div className="scan-pdf-spec-item">
+                                        <label>Status</label>
+                                        <div>{tool.status}</div>
+                                    </div>
+                                </div>
+
+                                <div className="scan-pdf-description">
+                                    <label>Deskripsi Alat</label>
+                                    <p>{tool.description || 'Tidak ada deskripsi tambahan.'}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {tool.sop && tool.sop.length > 0 && (
+                            <div className="scan-pdf-sop">
+                                <h3>SOP / Langkah Penggunaan</h3>
+                                <div className="scan-pdf-sop-grid">
+                                    {tool.sop.map((step, idx) => (
+                                        <div key={idx} className="scan-pdf-sop-step">
+                                            <span className="step-number">{idx + 1}</span>
+                                            <p>{step}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
-                    {/* Tool Image */}
-                    {tool.image && (
-                        <div className="scan-pdf-image-section">
-                            <img src={tool.image} alt={tool.name} className="scan-pdf-image" />
+                    <footer className="scan-pdf-footer">
+                        <div className="scan-pdf-qr-block">
+                            <QRCodeCanvas value={qrUrl} size={100} />
+                            <p>Scan untuk info terbaru & SOP digital</p>
                         </div>
-                    )}
-
-                    {/* Specifications Table */}
-                    <div className="scan-pdf-section">
-                        <h2 className="scan-pdf-section-title">📋 Spesifikasi Alat</h2>
-                        <table className="scan-pdf-table">
-                            <tbody>
-                                <tr><td className="scan-pdf-label">Nama Alat</td><td>{tool.name}</td></tr>
-                                <tr><td className="scan-pdf-label">Kategori</td><td>{tool.category}</td></tr>
-                                <tr><td className="scan-pdf-label">Jurusan</td><td>{tool.jurusan}</td></tr>
-                                <tr><td className="scan-pdf-label">Kondisi</td><td>{tool.condition}</td></tr>
-                                <tr><td className="scan-pdf-label">Status</td><td>{tool.status}</td></tr>
-                                <tr><td className="scan-pdf-label">Tanggal Pembelian</td><td>{tool.purchaseDate}</td></tr>
-                                {tool.description && <tr><td className="scan-pdf-label">Deskripsi</td><td>{tool.description}</td></tr>}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {/* SOP Section */}
-                    {tool.sop && tool.sop.length > 0 && (
-                        <div className="scan-pdf-section">
-                            <h2 className="scan-pdf-section-title">📖 SOP - Langkah Penggunaan</h2>
-                            <ol className="scan-pdf-sop-list">
-                                {tool.sop.map((step, index) => (
-                                    <li key={index} className="scan-pdf-sop-step">
-                                        <span className="scan-pdf-step-number">{index + 1}</span>
-                                        <span className="scan-pdf-step-text">{step}</span>
-                                    </li>
-                                ))}
-                            </ol>
+                        <div className="scan-pdf-meta">
+                            <p>Dibuat: {new Date(tool.createdAt).toLocaleDateString('id-ID')}</p>
+                            <p>Lokasi: Bengkel {tool.jurusan}</p>
                         </div>
-                    )}
-
-                    {/* Footer */}
-                    <div className="scan-pdf-footer">
-                        <p>Dokumen ini di-generate otomatis oleh sistem BengkelQR</p>
-                        <p>Tanggal cetak: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                    </div>
-                </div>
-
-                {/* Action Buttons (hidden in print) */}
-                <div className="no-print" style={{ textAlign: 'center', marginTop: '20px' }}>
-                    <button onClick={handlePrint} className="btn btn-primary">
-                        <Download size={18} /> Download / Print PDF
-                    </button>
+                    </footer>
                 </div>
             </div>
         );
@@ -115,47 +135,47 @@ const ToolDetail = () => {
                 <div className="minimal-info">
                     {tool.image && (
                         <div style={{ marginBottom: '25px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)', maxWidth: '350px' }}>
-                            <img
-                                src={tool.image}
-                                alt={tool.name}
-                                style={{ width: '100%', maxHeight: '250px', objectFit: 'cover' }}
-                            />
+                            <img src={tool.image} alt={tool.name} style={{ width: '100%', display: 'block', maxHeight: '250px', objectFit: 'cover' }} />
                         </div>
                     )}
+
                     <h1 className="minimal-title">{tool.name}</h1>
 
-                    <div className="minimal-field">
-                        <label>Jurusan</label>
-                        <div className="minimal-value">{tool.jurusan}</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '10px' }}>
+                        <div className="minimal-field">
+                            <label>Jurusan</label>
+                            <p className="minimal-value">{tool.jurusan}</p>
+                        </div>
+                        <div className="minimal-field">
+                            <label>Category</label>
+                            <p className="minimal-value">{tool.category}</p>
+                        </div>
                     </div>
 
-                    <div className="minimal-field">
-                        <label>Category</label>
-                        <div className="minimal-value">{tool.category}</div>
-                    </div>
-
-                    <div className="minimal-field">
-                        <label>Condition</label>
-                        <div className="minimal-value">{tool.condition}</div>
-                    </div>
-
-                    <div className="minimal-field">
-                        <label>Purchase Date</label>
-                        <div className="minimal-value">{tool.purchaseDate}</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '10px' }}>
+                        <div className="minimal-field">
+                            <label>Condition</label>
+                            <p className="minimal-value">{tool.condition}</p>
+                        </div>
+                        <div className="minimal-field">
+                            <label>Purchase Date</label>
+                            <p className="minimal-value">{tool.purchaseDate}</p>
+                        </div>
                     </div>
 
                     <div className="minimal-field">
                         <label>Description</label>
-                        <p className="minimal-value">{tool.description || 'No description provided.'}</p>
+                        <p className="minimal-value" style={{ fontWeight: '400', lineHeight: '1.6' }}>
+                            {tool.description || 'No description provided.'}
+                        </p>
                     </div>
 
-                    {/* SOP in normal view */}
                     {tool.sop && tool.sop.length > 0 && (
-                        <div className="minimal-field">
-                            <label>SOP - Langkah Penggunaan</label>
-                            <ol style={{ paddingLeft: '20px', margin: '10px 0' }}>
-                                {tool.sop.map((step, index) => (
-                                    <li key={index} style={{ marginBottom: '6px', color: 'var(--text-primary)' }}>{step}</li>
+                        <div className="minimal-field" style={{ marginTop: '10px' }}>
+                            <label>SOP Penggunaan</label>
+                            <ol style={{ paddingLeft: '20px', marginTop: '10px', color: 'var(--text-primary)' }}>
+                                {tool.sop.map((step, idx) => (
+                                    <li key={idx} style={{ marginBottom: '8px' }}>{step}</li>
                                 ))}
                             </ol>
                         </div>
@@ -167,17 +187,22 @@ const ToolDetail = () => {
                         <button onClick={() => navigate('/')} className="btn btn-outline">
                             <ArrowLeft size={16} /> Dashboard
                         </button>
-                        <button onClick={() => navigate(`/edit/${tool.id}`)} className="btn btn-outline">
-                            <Edit size={16} /> Edit Tool
-                        </button>
-                        {!showQR && (
-                            <button onClick={() => setShowQR(true)} className="btn btn-outline">
-                                <QrCode size={16} /> Manage QR
-                            </button>
+
+                        {canManage && (
+                            <>
+                                <button onClick={() => navigate(`/edit/${tool.id}`)} className="btn btn-outline">
+                                    <Edit size={16} /> Edit Tool
+                                </button>
+                                {!showQR && (
+                                    <button onClick={() => setShowQR(true)} className="btn btn-outline">
+                                        <QrCode size={16} /> Manage QR
+                                    </button>
+                                )}
+                                <button onClick={handleDelete} className="btn btn-outline" style={{ color: 'var(--accent-danger)', borderColor: 'var(--accent-danger)' }}>
+                                    <Trash2 size={16} /> Delete
+                                </button>
+                            </>
                         )}
-                        <button onClick={handleDelete} className="btn btn-outline" style={{ color: 'var(--accent-danger)', borderColor: 'var(--accent-danger)' }}>
-                            <Trash2 size={16} /> Delete
-                        </button>
                     </div>
                 )}
             </div>

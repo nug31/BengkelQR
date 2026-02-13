@@ -5,8 +5,12 @@ import { Search } from 'lucide-react';
 
 const Dashboard = () => {
     const { tools, loading } = useInventory();
+    const { getJurusan, isAdmin } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedJurusan, setSelectedJurusan] = useState('All');
+    const userJurusan = getJurusan();
+
+    // Default to 'All' for admin, or the user's specific department
+    const [selectedJurusan, setSelectedJurusan] = useState(isAdmin ? 'All' : (userJurusan || 'All'));
 
     const jurusans = [
         { id: 'All', label: 'Semua' },
@@ -23,7 +27,12 @@ const Dashboard = () => {
     const filteredTools = tools.filter(tool => {
         const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             tool.category.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesJurusan = selectedJurusan === 'All' || tool.jurusan === selectedJurusan;
+
+        // If admin, filter by chip. If user, restrict to their jurusan.
+        const matchesJurusan = isAdmin
+            ? (selectedJurusan === 'All' || tool.jurusan === selectedJurusan)
+            : (tool.jurusan === userJurusan);
+
         return matchesSearch && matchesJurusan;
     });
 
@@ -47,17 +56,19 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            <div className="dept-nav">
-                {jurusans.map(j => (
-                    <button
-                        key={j.id}
-                        className={`dept-chip ${selectedJurusan === j.id ? 'active' : ''}`}
-                        onClick={() => setSelectedJurusan(j.id)}
-                    >
-                        {j.label}
-                    </button>
-                ))}
-            </div>
+            {isAdmin && (
+                <div className="dept-nav">
+                    {jurusans.map(j => (
+                        <button
+                            key={j.id}
+                            className={`dept-chip ${selectedJurusan === j.id ? 'active' : ''}`}
+                            onClick={() => setSelectedJurusan(j.id)}
+                        >
+                            {j.label}
+                        </button>
+                    ))}
+                </div>
+            )}
 
             <div className="grid-layout">
                 {loading ? (
