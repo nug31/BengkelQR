@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
-import { Save, ArrowLeft } from 'lucide-react';
+import { Save, ArrowLeft, Plus, Trash2 } from 'lucide-react';
 
 const EditTool = () => {
     const { id } = useParams();
@@ -16,7 +16,8 @@ const EditTool = () => {
         status: 'Available',
         description: '',
         purchaseDate: new Date().toISOString().split('T')[0],
-        image: null
+        image: null,
+        sop: ['']
     });
     const [imageError, setImageError] = useState('');
 
@@ -31,7 +32,8 @@ const EditTool = () => {
                 status: tool.status || 'Available',
                 description: tool.description || '',
                 purchaseDate: tool.purchaseDate || new Date().toISOString().split('T')[0],
-                image: tool.image || null
+                image: tool.image || null,
+                sop: tool.sop && tool.sop.length ? tool.sop : ['']
             });
         } else {
             navigate('/');
@@ -61,8 +63,24 @@ const EditTool = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (imageError) return;
-        updateTool(id, formData);
+        const cleanData = { ...formData, sop: formData.sop.filter(s => s.trim()) };
+        updateTool(id, cleanData);
         navigate(`/tool/${id}`);
+    };
+
+    const handleSopChange = (index, value) => {
+        const newSop = [...formData.sop];
+        newSop[index] = value;
+        setFormData({ ...formData, sop: newSop });
+    };
+
+    const addSopStep = () => {
+        setFormData({ ...formData, sop: [...formData.sop, ''] });
+    };
+
+    const removeSopStep = (index) => {
+        const newSop = formData.sop.filter((_, i) => i !== index);
+        setFormData({ ...formData, sop: newSop.length ? newSop : [''] });
     };
 
     return (
@@ -176,6 +194,37 @@ const EditTool = () => {
                             onChange={handleChange}
                             placeholder="Enter serial number or other details..."
                         ></textarea>
+                    </div>
+
+                    <div className="form-group">
+                        <label>SOP - Langkah Penggunaan</label>
+                        {formData.sop.map((step, index) => (
+                            <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'center' }}>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', minWidth: '24px' }}>{index + 1}.</span>
+                                <input
+                                    type="text"
+                                    value={step}
+                                    onChange={(e) => handleSopChange(index, e.target.value)}
+                                    placeholder={`Langkah ${index + 1}...`}
+                                    style={{ flex: 1 }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removeSopStep(index)}
+                                    style={{ background: 'none', border: 'none', color: 'var(--accent-danger)', cursor: 'pointer', padding: '4px' }}
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            onClick={addSopStep}
+                            className="btn btn-outline"
+                            style={{ width: '100%', marginTop: '8px', fontSize: '0.85rem' }}
+                        >
+                            <Plus size={14} /> Tambah Langkah
+                        </button>
                     </div>
 
                     <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>

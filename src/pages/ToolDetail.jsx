@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
 import { QRCodeCanvas } from 'qrcode.react';
-import { ArrowLeft, Printer, Trash2, QrCode, Edit } from 'lucide-react';
+import { ArrowLeft, Printer, Trash2, QrCode, Edit, Download } from 'lucide-react';
 
 const ToolDetail = () => {
     const { id } = useParams();
@@ -35,6 +35,83 @@ const ToolDetail = () => {
         window.print();
     };
 
+    // --- SCAN VIEW: PDF-like layout ---
+    if (isScanView) {
+        return (
+            <div className="scan-pdf-container">
+                <div className="scan-pdf-page">
+                    {/* Header */}
+                    <div className="scan-pdf-header">
+                        <div>
+                            <h1 className="scan-pdf-title">{tool.name}</h1>
+                            <p className="scan-pdf-subtitle">Jurusan: {tool.jurusan} | Kategori: {tool.category}</p>
+                        </div>
+                        <div className="scan-pdf-badge">
+                            <span className={`badge ${tool.condition === 'Broken' ? 'badge-maintenance' : tool.status === 'In Use' ? 'badge-damaged' : 'badge-good'}`}>
+                                {tool.condition === 'Broken' ? 'Maintenance' : tool.status === 'In Use' ? 'In Use' : 'Available'}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Tool Image */}
+                    {tool.image && (
+                        <div className="scan-pdf-image-section">
+                            <img src={tool.image} alt={tool.name} className="scan-pdf-image" />
+                        </div>
+                    )}
+
+                    {/* Specifications Table */}
+                    <div className="scan-pdf-section">
+                        <h2 className="scan-pdf-section-title">📋 Spesifikasi Alat</h2>
+                        <table className="scan-pdf-table">
+                            <tbody>
+                                <tr><td className="scan-pdf-label">Nama Alat</td><td>{tool.name}</td></tr>
+                                <tr><td className="scan-pdf-label">Kategori</td><td>{tool.category}</td></tr>
+                                <tr><td className="scan-pdf-label">Jurusan</td><td>{tool.jurusan}</td></tr>
+                                <tr><td className="scan-pdf-label">Kondisi</td><td>{tool.condition}</td></tr>
+                                <tr><td className="scan-pdf-label">Status</td><td>{tool.status}</td></tr>
+                                <tr><td className="scan-pdf-label">Tanggal Pembelian</td><td>{tool.purchaseDate}</td></tr>
+                                {tool.description && <tr><td className="scan-pdf-label">Deskripsi</td><td>{tool.description}</td></tr>}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* SOP Section */}
+                    {tool.sop && tool.sop.length > 0 && (
+                        <div className="scan-pdf-section">
+                            <h2 className="scan-pdf-section-title">📖 SOP - Langkah Penggunaan</h2>
+                            <ol className="scan-pdf-sop-list">
+                                {tool.sop.map((step, index) => (
+                                    <li key={index} className="scan-pdf-sop-step">
+                                        <span className="scan-pdf-step-number">{index + 1}</span>
+                                        <span className="scan-pdf-step-text">{step}</span>
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+                    )}
+
+                    {/* Footer */}
+                    <div className="scan-pdf-footer">
+                        <p>Dokumen ini di-generate otomatis oleh sistem BengkelQR</p>
+                        <p>Tanggal cetak: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                    </div>
+                </div>
+
+                {/* Action Buttons (hidden in print) */}
+                <div className="no-print" style={{ textAlign: 'center', marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
+                    <button onClick={handlePrint} className="btn btn-primary">
+                        <Download size={18} /> Download / Print PDF
+                    </button>
+                    <button onClick={() => navigate(`/tool/${tool.id}`)} className="btn btn-outline">
+                        Lihat Detail Lengkap
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // --- NORMAL VIEW ---
     return (
         <div className={`detail-container ${showQR ? 'has-qr' : ''}`}>
             <div className="detail-main">
@@ -74,6 +151,18 @@ const ToolDetail = () => {
                         <label>Description</label>
                         <p className="minimal-value">{tool.description || 'No description provided.'}</p>
                     </div>
+
+                    {/* SOP in normal view */}
+                    {tool.sop && tool.sop.length > 0 && (
+                        <div className="minimal-field">
+                            <label>SOP - Langkah Penggunaan</label>
+                            <ol style={{ paddingLeft: '20px', margin: '10px 0' }}>
+                                {tool.sop.map((step, index) => (
+                                    <li key={index} style={{ marginBottom: '6px', color: 'var(--text-primary)' }}>{step}</li>
+                                ))}
+                            </ol>
+                        </div>
+                    )}
                 </div>
 
                 {!isScanView && (

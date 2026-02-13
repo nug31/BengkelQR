@@ -17,8 +17,17 @@ export const InventoryProvider = ({ children }) => {
         jurusan: 'TKR',
         condition: 'Good',
         status: 'Available',
-        description: 'Alat uji gas emisi kendaraan berbahan bakar bensin. Heavy Duty dan High Accuracy. Mengukur Gas: CO, HC, Co2, O2, AFR, NOx (opsional). Metode: NDIR & Sel Elektrokimia. Repeatability: < 2% FS. Waktu respon: < 10 Detik. Koneksi: Port RS 232. Video: https://youtu.be/WNYdjNcq1KY',
-        purchaseDate: '2026-02-10'
+        description: 'Alat uji gas emisi kendaraan berbahan bakar bensin. Heavy Duty dan High Accuracy.',
+        purchaseDate: '2026-02-10',
+        sop: [
+          'Pastikan alat dalam kondisi baik dan kabel terhubung dengan benar.',
+          'Nyalakan alat dan tunggu proses pemanasan selama 10 menit.',
+          'Hubungkan probe ke knalpot kendaraan.',
+          'Tekan tombol START untuk memulai pengukuran.',
+          'Baca hasil pengukuran gas CO, HC, CO2, dan O2 pada layar.',
+          'Setelah selesai, cabut probe dan matikan alat.',
+          'Bersihkan probe dan simpan alat di tempat yang kering.'
+        ]
       },
       {
         id: '1',
@@ -28,7 +37,16 @@ export const InventoryProvider = ({ children }) => {
         condition: 'Good',
         status: 'Available',
         description: 'Heavy duty drill for masonry work.',
-        purchaseDate: '2025-01-15'
+        purchaseDate: '2025-01-15',
+        sop: [
+          'Periksa kondisi mata bor dan pastikan terpasang dengan benar.',
+          'Hubungkan kabel power ke sumber listrik.',
+          'Atur kecepatan putaran sesuai jenis material.',
+          'Tekan tombol trigger perlahan untuk memulai pengeboran.',
+          'Gunakan tekanan yang stabil dan konsisten.',
+          'Setelah selesai, matikan alat dan cabut dari sumber listrik.',
+          'Bersihkan mata bor dan simpan alat dengan rapi.'
+        ]
       },
       {
         id: '2',
@@ -38,7 +56,14 @@ export const InventoryProvider = ({ children }) => {
         condition: 'Good',
         status: 'In Use',
         description: 'Complete set 6mm-24mm',
-        purchaseDate: '2024-11-20'
+        purchaseDate: '2024-11-20',
+        sop: [
+          'Pilih ukuran kunci pas yang sesuai dengan mur/baut.',
+          'Pasang kunci pada mur/baut dengan posisi yang tepat.',
+          'Putar searah jarum jam untuk mengencangkan, berlawanan untuk mengendurkan.',
+          'Jangan gunakan perpanjangan tuas yang tidak sesuai.',
+          'Setelah selesai, bersihkan dan kembalikan ke tempat penyimpanan.'
+        ]
       }
     ];
   });

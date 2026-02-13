@@ -271,12 +271,15 @@ textarea:focus {
   overflow-x: auto;
   padding-bottom: 15px;
   margin-bottom: 25px;
-  scrollbar-width: none; /* Hide scrollbar for Firefox */
-  -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+  scrollbar-width: none;
+  /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none;
+  /* Hide scrollbar for IE/Edge */
 }
 
 .dept-nav::-webkit-scrollbar {
-  display: none; /* Hide scrollbar for Chrome/Safari */
+  display: none;
+  /* Hide scrollbar for Chrome/Safari */
 }
 
 .dept-chip {
@@ -304,7 +307,149 @@ textarea:focus {
   border-color: var(--primary);
 }
 
-/* Print Styles */
+/* ===== Scan PDF View ===== */
+.scan-pdf-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.scan-pdf-page {
+  background: white;
+  color: #1a1a1a;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.scan-pdf-header {
+  background: linear-gradient(135deg, #1e3a5f, #2d5f8a);
+  color: white;
+  padding: 30px 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scan-pdf-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: white;
+}
+
+.scan-pdf-subtitle {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.scan-pdf-image-section {
+  padding: 25px 35px;
+  text-align: center;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.scan-pdf-image {
+  max-width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.scan-pdf-section {
+  padding: 25px 35px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.scan-pdf-section:last-of-type {
+  border-bottom: none;
+}
+
+.scan-pdf-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 15px 0;
+  color: #1e3a5f;
+}
+
+.scan-pdf-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.scan-pdf-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.92rem;
+  color: #333;
+}
+
+.scan-pdf-table tr:last-child td {
+  border-bottom: none;
+}
+
+.scan-pdf-label {
+  font-weight: 600;
+  color: #555 !important;
+  width: 160px;
+  background: #fafbfc;
+}
+
+.scan-pdf-sop-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: sop-counter;
+}
+
+.scan-pdf-sop-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.scan-pdf-sop-step:last-child {
+  border-bottom: none;
+}
+
+.scan-pdf-step-number {
+  background: #1e3a5f;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.scan-pdf-step-text {
+  font-size: 0.92rem;
+  color: #333;
+  line-height: 1.6;
+  padding-top: 3px;
+}
+
+.scan-pdf-footer {
+  background: #f8f9fa;
+  padding: 18px 35px;
+  text-align: center;
+  border-top: 1px solid #e9ecef;
+}
+
+.scan-pdf-footer p {
+  margin: 2px 0;
+  font-size: 0.75rem;
+  color: #999;
+}
+
+/* ===== Print Styles ===== */
 @media print {
   .no-print {
     display: none !important;
@@ -336,5 +481,30 @@ textarea:focus {
     box-shadow: none !important;
     background: white !important;
     color: black !important;
+  }
+
+  /* PDF scan view print */
+  .scan-pdf-container {
+    max-width: 100%;
+  }
+
+  .scan-pdf-page {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .scan-pdf-header {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .scan-pdf-step-number {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .scan-pdf-label {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
