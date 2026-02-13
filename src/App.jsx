@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import AddTool from './pages/AddTool';
 import EditTool from './pages/EditTool';
 import ToolDetail from './pages/ToolDetail';
+import QRGenerator from './pages/QRGenerator';
 import { InventoryProvider } from './context/InventoryContext';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Route path="/add" element={<AddTool />} />
             <Route path="/edit/:id" element={<EditTool />} />
             <Route path="/tool/:id" element={<ToolDetail />} />
+            <Route path="/generator" element={<QRGenerator />} />
           </Routes>
         </Layout>
       </BrowserRouter>
