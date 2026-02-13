@@ -6,17 +6,32 @@ import { Search } from 'lucide-react';
 const Dashboard = () => {
     const { tools } = useInventory();
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedJurusan, setSelectedJurusan] = useState('All');
 
-    const filteredTools = tools.filter(tool =>
-        tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tool.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const jurusans = [
+        { id: 'All', label: 'Semua' },
+        { id: 'TKR', label: 'TKR' },
+        { id: 'TSM', label: 'TSM' },
+        { id: 'Mesin', label: 'Teknik Mesin' },
+        { id: 'Elind', label: 'Teknik Elind' },
+        { id: 'Listrik', label: 'Teknik Listrik' },
+        { id: 'Akuntansi', label: 'Akuntansi' },
+        { id: 'Perhotelan', label: 'Perhotelan' },
+        { id: 'TKI', label: 'TKI' }
+    ];
+
+    const filteredTools = tools.filter(tool => {
+        const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            tool.category.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesJurusan = selectedJurusan === 'All' || tool.jurusan === selectedJurusan;
+        return matchesSearch && matchesJurusan;
+    });
 
     return (
         <div>
-            <div className="flex-between" style={{ marginBottom: '2rem' }}>
+            <div className="flex-between" style={{ marginBottom: '1.5rem' }}>
                 <div>
-                    <h1 className="text-xl">Workshop Inventory</h1>
+                    <h1 className="text-xl" style={{ marginBottom: '5px' }}>Workshop Inventory</h1>
                     <p className="text-muted">Manage your tools and equipment</p>
                 </div>
 
@@ -30,6 +45,18 @@ const Dashboard = () => {
                         style={{ paddingLeft: '35px' }}
                     />
                 </div>
+            </div>
+
+            <div className="dept-nav">
+                {jurusans.map(j => (
+                    <button
+                        key={j.id}
+                        className={`dept-chip ${selectedJurusan === j.id ? 'active' : ''}`}
+                        onClick={() => setSelectedJurusan(j.id)}
+                    >
+                        {j.label}
+                    </button>
+                ))}
             </div>
 
             <div className="grid-layout">
