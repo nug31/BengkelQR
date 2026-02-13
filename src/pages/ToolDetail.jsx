@@ -114,11 +114,11 @@ const ToolDetail = () => {
             <div className="detail-main">
                 <div className="minimal-info">
                     {tool.image && (
-                        <div style={{ marginBottom: '25px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)' }}>
+                        <div style={{ marginBottom: '25px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)', maxWidth: '350px' }}>
                             <img
                                 src={tool.image}
                                 alt={tool.name}
-                                style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }}
+                                style={{ width: '100%', maxHeight: '250px', objectFit: 'cover' }}
                             />
                         </div>
                     )}
