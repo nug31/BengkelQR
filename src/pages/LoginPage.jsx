@@ -38,7 +38,7 @@ const LoginPage = () => {
                     }}>
                         <LogIn size={30} />
                     </div>
-                    <h1 className="text-xl">BebgkelQR Login</h1>
+                    <h1 className="text-xl">BengkelQR Login</h1>
                     <p className="text-muted">Masuk ke sistem manajemen alat</p>
                 </div>
 
