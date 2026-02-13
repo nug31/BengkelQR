@@ -15,9 +15,6 @@ const Header = () => {
                 <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
                     Dashboard
                 </Link>
-                <Link to="/generator" className={location.pathname === '/generator' ? 'active' : ''}>
-                    Barcode Generator
-                </Link>
                 <Link to="/add" className={`btn btn-primary ${location.pathname === '/add' ? 'active' : ''}`} style={{ color: 'var(--bg-dark)' }}>
                     <PlusCircle size={18} />
                     Add Tool
