@@ -99,12 +99,9 @@ const ToolDetail = () => {
                 </div>
 
                 {/* Action Buttons (hidden in print) */}
-                <div className="no-print" style={{ textAlign: 'center', marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '12px' }}>
+                <div className="no-print" style={{ textAlign: 'center', marginTop: '20px' }}>
                     <button onClick={handlePrint} className="btn btn-primary">
                         <Download size={18} /> Download / Print PDF
-                    </button>
-                    <button onClick={() => navigate(`/tool/${tool.id}`)} className="btn btn-outline">
-                        Lihat Detail Lengkap
                     </button>
                 </div>
             </div>
