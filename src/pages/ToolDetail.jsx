@@ -186,7 +186,7 @@ const ToolDetail = () => {
             {(showQR) && (
                 <div className="qr-section no-print">
                     <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                        <div style={{ width: '100%', textAlign: 'right', marginBottom: '10px' }}>
+                        <div className="no-print" style={{ width: '100%', textAlign: 'right', marginBottom: '10px' }}>
                             <button onClick={() => setShowQR(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>Close</button>
                         </div>
                         <h3 className="text-xl no-print">QR Code Label</h3>
@@ -198,7 +198,7 @@ const ToolDetail = () => {
                                 </div>
                             </div>
                         </div>
-                        <div style={{ marginTop: '20px', width: '100%' }}>
+                        <div className="no-print" style={{ marginTop: '20px', width: '100%' }}>
                             <button onClick={handlePrint} className="btn btn-primary" style={{ width: '100%' }}>
                                 <Printer size={18} /> Print QR
                             </button>
