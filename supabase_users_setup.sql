@@ -68,6 +68,8 @@ BEGIN
                 user_id,
                 identity_data,
                 provider,
+                provider_id,
+                email,
                 last_sign_in_at,
                 created_at,
                 updated_at
@@ -76,6 +78,8 @@ BEGIN
                 new_user_id,
                 jsonb_build_object('sub', new_user_id, 'email', u->>'email'),
                 'email',
+                u->>'email',
+                u->>'email',
                 now(),
                 now(),
                 now()
