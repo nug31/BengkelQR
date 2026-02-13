@@ -449,6 +449,31 @@ textarea:focus {
   color: #999;
 }
 
+.printable-qr-label {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.qr-printable-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-tool-name {
+  color: black;
+  background: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
 /* ===== Print Styles ===== */
 @media print {
   .no-print {
@@ -458,29 +483,52 @@ textarea:focus {
   body {
     background: white !important;
     color: black !important;
+    margin: 0;
+    padding: 0;
   }
+
+  /* When printing tool detail, hide all except QR if that's what we want */
+  /* However, we have two print cases: SOP PDF and Label */
 
   .layout {
     padding: 0;
     margin: 0;
   }
 
+  /* Tool Detail Print Adjustments */
   .detail-container {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Scan PDF view takes priority if active */
+  .scan-pdf-container {
     display: block !important;
   }
 
+  /* If we are printing the QR Label specifically */
   .qr-section {
     display: flex !important;
     justify-content: center;
-    position: static;
-    margin-top: 40px;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white !important;
+    z-index: 9999;
   }
 
-  .card {
+  .qr-section .card {
     border: none !important;
     box-shadow: none !important;
-    background: white !important;
-    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .printable-qr-label {
+    padding: 20px !important;
   }
 
   /* PDF scan view print */

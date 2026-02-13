@@ -189,16 +189,18 @@ const ToolDetail = () => {
                         <div style={{ width: '100%', textAlign: 'right', marginBottom: '10px' }}>
                             <button onClick={() => setShowQR(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>Close</button>
                         </div>
-                        <h3 className="text-xl">QR Code Label</h3>
-                        <div style={{ background: 'white', padding: '15px', borderRadius: '8px', marginBottom: '10px' }} ref={qrRef}>
-                            <QRCodeCanvas value={qrUrl} size={180} />
-                        </div>
-                        <div style={{ color: 'black', background: 'white', padding: '5px 10px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}>
-                            {tool.name}
+                        <h3 className="text-xl no-print">QR Code Label</h3>
+                        <div className="printable-qr-label" ref={qrRef}>
+                            <div className="qr-printable-content">
+                                <QRCodeCanvas value={qrUrl} size={180} />
+                                <div className="qr-tool-name">
+                                    {tool.name}
+                                </div>
+                            </div>
                         </div>
                         <div style={{ marginTop: '20px', width: '100%' }}>
                             <button onClick={handlePrint} className="btn btn-primary" style={{ width: '100%' }}>
-                                <Printer size={18} /> Print Label
+                                <Printer size={18} /> Print QR
                             </button>
                         </div>
                     </div>
