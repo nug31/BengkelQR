@@ -1,95 +1,128 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { supabase } from '../supabaseClient';
 
 const InventoryContext = createContext();
 
-export const useInventory = () => useContext(InventoryContext);
-
-const LOCAL_STORAGE_KEY = 'workshop_inventory_v1';
-
 export const InventoryProvider = ({ children }) => {
-  const [tools, setTools] = useState(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [
-      {
-        id: '3',
-        name: 'Four Gas Analyzer Qrotech QRO - 402',
-        category: 'Automotive Emission Analyzer',
-        jurusan: 'TKR',
-        condition: 'Good',
-        status: 'Available',
-        description: 'Alat uji gas emisi kendaraan berbahan bakar bensin. Heavy Duty dan High Accuracy.',
-        purchaseDate: '2026-02-10',
-        sop: [
-          'Pastikan alat dalam kondisi baik dan kabel terhubung dengan benar.',
-          'Nyalakan alat dan tunggu proses pemanasan selama 10 menit.',
-          'Hubungkan probe ke knalpot kendaraan.',
-          'Tekan tombol START untuk memulai pengukuran.',
-          'Baca hasil pengukuran gas CO, HC, CO2, dan O2 pada layar.',
-          'Setelah selesai, cabut probe dan matikan alat.',
-          'Bersihkan probe dan simpan alat di tempat yang kering.'
-        ]
-      },
-      {
-        id: '1',
-        name: 'Hammer Drill X500',
-        category: 'Power Tools',
-        jurusan: 'Mesin',
-        condition: 'Good',
-        status: 'Available',
-        description: 'Heavy duty drill for masonry work.',
-        purchaseDate: '2025-01-15',
-        sop: [
-          'Periksa kondisi mata bor dan pastikan terpasang dengan benar.',
-          'Hubungkan kabel power ke sumber listrik.',
-          'Atur kecepatan putaran sesuai jenis material.',
-          'Tekan tombol trigger perlahan untuk memulai pengeboran.',
-          'Gunakan tekanan yang stabil dan konsisten.',
-          'Setelah selesai, matikan alat dan cabut dari sumber listrik.',
-          'Bersihkan mata bor dan simpan alat dengan rapi.'
-        ]
-      },
-      {
-        id: '2',
-        name: 'Wrench Set (Metric)',
-        category: 'Hand Tools',
-        jurusan: 'TKR',
-        condition: 'Good',
-        status: 'In Use',
-        description: 'Complete set 6mm-24mm',
-        purchaseDate: '2024-11-20',
-        sop: [
-          'Pilih ukuran kunci pas yang sesuai dengan mur/baut.',
-          'Pasang kunci pada mur/baut dengan posisi yang tepat.',
-          'Putar searah jarum jam untuk mengencangkan, berlawanan untuk mengendurkan.',
-          'Jangan gunakan perpanjangan tuas yang tidak sesuai.',
-          'Setelah selesai, bersihkan dan kembalikan ke tempat penyimpanan.'
-        ]
-      }
-    ];
-  });
+  const [tools, setTools] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch all tools from Supabase
+  const fetchTools = useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('tools')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching tools:', error);
+    } else {
+      // Map snake_case DB fields to camelCase used in the app
+      const mapped = data.map(t => ({
+        id: t.id,
+        name: t.name,
+        category: t.category,
+        jurusan: t.jurusan,
+        condition: t.condition,
+        status: t.status,
+        description: t.description,
+        purchaseDate: t.purchase_date,
+        image: t.image,
+        sop: t.sop || [],
+        createdAt: t.created_at
+      }));
+      setTools(mapped);
+    }
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tools));
+    fetchTools();
+  }, [fetchTools]);
+
+  const addTool = async (toolData) => {
+    const { data, error } = await supabase
+      .from('tools')
+      .insert([{
+        name: toolData.name,
+        category: toolData.category,
+        jurusan: toolData.jurusan,
+        condition: toolData.condition,
+        status: toolData.status,
+        description: toolData.description,
+        purchase_date: toolData.purchaseDate,
+        image: toolData.image,
+        sop: toolData.sop || []
+      }])
+      .select();
+
+    if (error) {
+      console.error('Error adding tool:', error);
+    } else if (data && data.length > 0) {
+      const t = data[0];
+      const newTool = {
+        id: t.id,
+        name: t.name,
+        category: t.category,
+        jurusan: t.jurusan,
+        condition: t.condition,
+        status: t.status,
+        description: t.description,
+        purchaseDate: t.purchase_date,
+        image: t.image,
+        sop: t.sop || [],
+        createdAt: t.created_at
+      };
+      setTools(prev => [newTool, ...prev]);
+    }
+  };
+
+  const updateTool = async (id, toolData) => {
+    const { error } = await supabase
+      .from('tools')
+      .update({
+        name: toolData.name,
+        category: toolData.category,
+        jurusan: toolData.jurusan,
+        condition: toolData.condition,
+        status: toolData.status,
+        description: toolData.description,
+        purchase_date: toolData.purchaseDate,
+        image: toolData.image,
+        sop: toolData.sop || []
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error updating tool:', error);
+    } else {
+      setTools(prev => prev.map(t => t.id === id ? { ...t, ...toolData } : t));
+    }
+  };
+
+  const deleteTool = async (id) => {
+    const { error } = await supabase
+      .from('tools')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting tool:', error);
+    } else {
+      setTools(prev => prev.filter(t => t.id !== id));
+    }
+  };
+
+  const getToolById = useCallback((id) => {
+    return tools.find(t => t.id === id);
   }, [tools]);
 
-  const addTool = (tool) => {
-    const newTool = { ...tool, id: Date.now().toString() };
-    setTools(prev => [newTool, ...prev]);
-  };
-
-  const updateTool = (id, updatedFields) => {
-    setTools(prev => prev.map(t => t.id === id ? { ...t, ...updatedFields } : t));
-  };
-
-  const deleteTool = (id) => {
-    setTools(prev => prev.filter(t => t.id !== id));
-  };
-
-  const getToolById = (id) => tools.find(t => t.id === id);
-
   return (
-    <InventoryContext.Provider value={{ tools, addTool, updateTool, deleteTool, getToolById }}>
+    <InventoryContext.Provider value={{ tools, loading, addTool, updateTool, deleteTool, getToolById }}>
       {children}
     </InventoryContext.Provider>
   );
 };
+
+export const useInventory = () => useContext(InventoryContext);

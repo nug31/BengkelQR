@@ -4,7 +4,7 @@ import ToolCard from '../components/ToolCard';
 import { Search } from 'lucide-react';
 
 const Dashboard = () => {
-    const { tools } = useInventory();
+    const { tools, loading } = useInventory();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedJurusan, setSelectedJurusan] = useState('All');
 
@@ -60,7 +60,11 @@ const Dashboard = () => {
             </div>
 
             <div className="grid-layout">
-                {filteredTools.length > 0 ? (
+                {loading ? (
+                    <div className="text-muted" style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px' }}>
+                        Loading tools...
+                    </div>
+                ) : filteredTools.length > 0 ? (
                     filteredTools.map(tool => (
                         <ToolCard key={tool.id} tool={tool} />
                     ))
@@ -68,7 +72,8 @@ const Dashboard = () => {
                     <div className="text-muted" style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px' }}>
                         No tools found matching your search.
                     </div>
-                )}
+                )
+                }
             </div>
         </div>
     );
