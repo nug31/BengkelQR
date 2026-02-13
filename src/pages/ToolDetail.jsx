@@ -111,7 +111,7 @@ const ToolDetail = () => {
     // --- NORMAL VIEW ---
     return (
         <div className={`detail-container ${showQR ? 'has-qr' : ''}`}>
-            <div className="detail-main">
+            <div className={`detail-main ${showQR ? 'no-print' : ''}`}>
                 <div className="minimal-info">
                     {tool.image && (
                         <div style={{ marginBottom: '25px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)', maxWidth: '350px' }}>
