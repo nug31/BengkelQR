@@ -1,22 +1,26 @@
--- SCRIPT UNTUK MEMBUAT AKUN JURUSAN & TABEL PROFIL
--- Jalankan di SQL Editor Supabase
+-- ==========================================
+-- SCRIPT PERBAIKAN AKHIR (Paling Stabil)
+-- ==========================================
 
--- 1. Buat Tabel Profile di schema PUBLIC agar terlihat di Table Editor
-CREATE TABLE IF NOT EXISTS public.profiles (
+-- 1. Bersihkan sisa-sisa lama
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP FUNCTION IF EXISTS public.handle_new_user();
+DELETE FROM auth.users WHERE email LIKE '%@bengkel%';
+DROP TABLE IF EXISTS public.profiles CASCADE;
+
+-- 2. Buat ulang tabel Profile (Kebutuhan UI BengkelQR)
+CREATE TABLE public.profiles (
   id uuid REFERENCES auth.users ON DELETE CASCADE NOT NULL PRIMARY KEY,
   email text,
   jurusan text,
   updated_at timestamp with time zone DEFAULT now()
 );
 
--- Aktifkan Row Level Security (RLS)
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Profiles are visible to everyone" ON public.profiles FOR SELECT USING (true);
+CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
--- Policy agar user bisa melihat profilnya sendiri
-CREATE POLICY "Users can view own profile" ON public.profiles
-  FOR SELECT USING (auth.uid() = id);
-
--- 2. Fungsi Trigger untuk sinkronisasi otomatis dari AUTH ke PUBLIC
+-- 3. Trigger Sinkronisasi Otomatis
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
@@ -26,16 +30,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Pasang Trigger (Hapus dulu jika sudah ada agar tidak error)
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
--- 3. Extension pgcrypto
+-- 4. Buat Akun Jurusan
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
--- 4. Loop Pembuatan User
 DO $$
 DECLARE
     user_list JSONB[] := ARRAY[
@@ -53,26 +54,29 @@ DECLARE
     uid UUID;
 BEGIN
     FOREACH u IN ARRAY user_list LOOP
-        IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = u->>'email') THEN
-            uid := gen_random_uuid();
-            
-            INSERT INTO auth.users (
-                id, email, encrypted_password, email_confirmed_at,
-                raw_app_meta_data, raw_user_meta_data, aud, role,
-                is_super_admin, confirmed_at, last_sign_in_at, created_at, updated_at
-            ) VALUES (
-                uid, u->>'email', crypt(u->>'pass', gen_salt('bf')), now(),
-                '{"provider":"email","providers":["email"]}',
-                jsonb_build_object('jurusan', u->>'jurusan'),
-                'authenticated', 'authenticated', false, now(), now(), now(), now()
-            );
+        uid := gen_random_uuid();
+        
+        -- Insert User (Tanpa confirmed_at karena itu kolom otomatis)
+        INSERT INTO auth.users (
+            id, instance_id, email, encrypted_password, 
+            email_confirmed_at, raw_app_meta_data, raw_user_meta_data, 
+            aud, role, is_super_admin, created_at, updated_at
+        ) VALUES (
+            uid, '00000000-0000-0000-0000-000000000000', u->>'email', 
+            crypt(u->>'pass', gen_salt('bf')), now(),
+            '{"provider":"email","providers":["email"]}',
+            jsonb_build_object('jurusan', u->>'jurusan'),
+            'authenticated', 'authenticated', false, now(), now()
+        );
 
-            INSERT INTO auth.identities (
-                id, user_id, identity_data, provider, provider_id, last_sign_in_at, created_at, updated_at
-            ) VALUES (
-                uid, uid, format('{"sub":"%s","email":"%s"}', uid, u->>'email')::jsonb,
-                'email', u->>'email', now(), now(), now()
-            );
-        END IF;
+        -- Insert Identity
+        INSERT INTO auth.identities (
+            id, user_id, identity_data, provider, provider_id, 
+            last_sign_in_at, created_at, updated_at
+        ) VALUES (
+            gen_random_uuid(), uid, 
+            format('{"sub":"%s","email":"%s"}', uid, u->>'email')::jsonb,
+            'email', u->>'email', now(), now(), now()
+        );
     END LOOP;
 END $$;
