@@ -235,26 +235,26 @@ textarea:focus {
 }
 
 .minimal-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 2rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
   color: var(--text-primary);
 }
 
 .minimal-field {
-  margin-bottom: 2rem;
+  margin-bottom: 1.2rem;
 }
 
 .minimal-field label {
   color: var(--text-muted);
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
   text-transform: none;
 }
 
 .minimal-value {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--text-primary);
   margin: 0;
 }
