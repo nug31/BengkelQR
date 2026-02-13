@@ -12,9 +12,9 @@ const Dashboard = () => {
         { id: 'All', label: 'Semua' },
         { id: 'TKR', label: 'TKR' },
         { id: 'TSM', label: 'TSM' },
-        { id: 'Mesin', label: 'Teknik Mesin' },
-        { id: 'Elind', label: 'Teknik Elind' },
-        { id: 'Listrik', label: 'Teknik Listrik' },
+        { id: 'Mesin', label: 'Mesin' },
+        { id: 'Elind', label: 'Elind' },
+        { id: 'Listrik', label: 'Listrik' },
         { id: 'Akuntansi', label: 'Akuntansi' },
         { id: 'Perhotelan', label: 'Perhotelan' },
         { id: 'TKI', label: 'TKI' }
