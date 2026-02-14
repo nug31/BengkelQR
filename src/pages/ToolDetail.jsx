@@ -61,9 +61,9 @@ const ToolDetail = () => {
 
                     <div className="scan-pdf-content">
                         <div className="scan-pdf-main-row">
-                            <div className="scan-pdf-photo-section">
+                            <div className="scan-pdf-image-section">
                                 {tool.image ? (
-                                    <img src={tool.image} alt={tool.name} className="scan-pdf-photo" />
+                                    <img src={tool.image} alt={tool.name} className="scan-pdf-image" />
                                 ) : (
                                     <div className="scan-pdf-photo-placeholder">No Image</div>
                                 )}
