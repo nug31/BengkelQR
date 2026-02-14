@@ -307,146 +307,194 @@ textarea:focus {
   border-color: var(--primary);
 }
 
-/* ===== Scan PDF View ===== */
+/* ===== Scan View V2 ===== */
 .scan-pdf-container {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
-.scan-pdf-page {
+.scan-pdf-card {
   background: white;
   color: #1a1a1a;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
 
-.scan-pdf-header {
+/* Header V2 */
+.scan-header-v2 {
   background: linear-gradient(135deg, #1e3a5f, #2d5f8a);
   color: white;
-  padding: 30px 35px;
+  padding: 28px 25px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 12px;
 }
 
-.scan-pdf-title {
-  font-size: 1.6rem;
+.scan-header-text h1 {
+  font-size: 1.5rem;
   font-weight: 700;
   margin: 0 0 6px 0;
   color: white;
 }
 
-.scan-pdf-subtitle {
-  font-size: 0.9rem;
-  opacity: 0.85;
+.scan-header-text p {
+  font-size: 0.85rem;
+  opacity: 0.8;
   margin: 0;
+  color: white;
 }
 
-.scan-pdf-image-section {
-  padding: 25px 35px;
+.scan-status-badge {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.scan-badge-success {
+  background: rgba(0, 255, 128, 0.2);
+  color: #2ecc71;
+  border: 1px solid #2ecc71;
+}
+
+.scan-badge-warning {
+  background: rgba(255, 165, 0, 0.2);
+  color: #f39c12;
+  border: 1px solid #f39c12;
+}
+
+.scan-badge-danger {
+  background: rgba(255, 68, 68, 0.2);
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+}
+
+/* Image */
+.scan-image-wrapper {
+  background: #f0f2f5;
+  padding: 20px;
   text-align: center;
-  background: #f8f9fa;
   border-bottom: 1px solid #e9ecef;
 }
 
-.scan-pdf-image {
+.scan-image-wrapper img {
   max-width: 100%;
-  max-height: 350px;
+  max-height: 300px;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
-.scan-pdf-section {
-  padding: 25px 35px;
-  border-bottom: 1px solid #e9ecef;
+/* Sections */
+.scan-section {
+  padding: 25px;
+  border-bottom: 1px solid #eee;
 }
 
-.scan-pdf-section:last-of-type {
+.scan-section:last-of-type {
   border-bottom: none;
 }
 
-.scan-pdf-section-title {
-  font-size: 1.15rem;
+.scan-section-title {
+  font-size: 1.2rem;
   font-weight: 700;
-  margin: 0 0 15px 0;
+  margin: 0 0 18px 0;
   color: #1e3a5f;
 }
 
-.scan-pdf-table {
+/* Spec Table */
+.scan-spec-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.scan-pdf-table td {
-  padding: 10px 12px;
+.scan-spec-table td {
+  padding: 12px 14px;
   border-bottom: 1px solid #f0f0f0;
   font-size: 0.92rem;
   color: #333;
+  vertical-align: top;
 }
 
-.scan-pdf-table tr:last-child td {
+.scan-spec-table tr:last-child td {
   border-bottom: none;
 }
 
-.scan-pdf-label {
-  font-weight: 600;
-  color: #555 !important;
-  width: 160px;
+.scan-spec-label {
+  font-weight: 700;
+  color: #444 !important;
+  width: 45%;
   background: #fafbfc;
 }
 
-.scan-pdf-sop-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  counter-reset: sop-counter;
+/* SOP List */
+.scan-sop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-.scan-pdf-sop-step {
+.scan-sop-item {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
-  padding: 12px 0;
-  border-bottom: 1px solid #f5f5f5;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.scan-pdf-sop-step:last-child {
+.scan-sop-item:last-child {
   border-bottom: none;
 }
 
-.scan-pdf-step-number {
+.scan-sop-number {
   background: #1e3a5f;
   color: white;
-  width: 28px;
-  height: 28px;
+  min-width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
-.scan-pdf-step-text {
+.scan-sop-item p {
+  margin: 0;
   font-size: 0.92rem;
   color: #333;
-  line-height: 1.6;
-  padding-top: 3px;
+  line-height: 1.7;
 }
 
-.scan-pdf-footer {
+/* Footer V2 */
+.scan-footer-v2 {
   background: #f8f9fa;
-  padding: 18px 35px;
+  padding: 20px 25px;
   text-align: center;
   border-top: 1px solid #e9ecef;
 }
 
-.scan-pdf-footer p {
-  margin: 2px 0;
-  font-size: 0.75rem;
+.scan-footer-v2 p {
+  margin: 3px 0;
+  font-size: 0.78rem;
   color: #999;
+}
+
+/* Download Button */
+.scan-download-btn {
+  padding: 14px 35px;
+  font-size: 1rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 350px;
 }
 
 .printable-qr-label {

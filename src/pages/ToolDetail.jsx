@@ -41,88 +41,72 @@ const ToolDetail = () => {
 
     // --- SCAN / PDF VIEW ---
     if (isScanView) {
+        const getStatusLabel = () => {
+            if (tool.condition === 'Broken') return { text: 'MAINTENANCE', cls: 'scan-badge-danger' };
+            if (tool.status === 'In Use') return { text: 'IN USE', cls: 'scan-badge-warning' };
+            return { text: 'AVAILABLE', cls: 'scan-badge-success' };
+        };
+        const statusInfo = getStatusLabel();
+
         return (
             <div className="layout scan-pdf-container">
                 <div className="scan-pdf-card">
-                    {/* Header Brand */}
-                    <header className="scan-pdf-header">
-                        <div className="scan-pdf-brand">
-                            <Wrench size={32} />
-                            <div>
-                                <h2>BENGKEL SEKOLAH</h2>
-                                <p>Sistem Manajemen Inventaris Alat</p>
-                            </div>
+                    {/* HEADER: Tool name + subtitle + badge */}
+                    <header className="scan-header-v2">
+                        <div className="scan-header-text">
+                            <h1>{tool.name}</h1>
+                            <p>Jurusan: {tool.jurusan} | Kategori: {tool.category}</p>
                         </div>
+                        <span className={`scan-status-badge ${statusInfo.cls}`}>{statusInfo.text}</span>
                     </header>
 
-                    {/* 1. SPESIFIKASI ALAT */}
-                    <div className="scan-pdf-content">
-                        {tool.image && (
-                            <div className="scan-pdf-image-section">
-                                <img src={tool.image} alt={tool.name} className="scan-pdf-image" />
-                            </div>
-                        )}
-
-                        <div style={{ padding: '25px 35px' }}>
-                            <h1 style={{ fontSize: '1.6rem', fontWeight: 700, margin: '0 0 20px 0', color: 'var(--text-primary)' }}>{tool.name}</h1>
-
-                            <div className="scan-pdf-specs">
-                                <div className="scan-pdf-spec-item">
-                                    <label>Jurusan</label>
-                                    <div className="scan-pdf-badge">{tool.jurusan}</div>
-                                </div>
-                                <div className="scan-pdf-spec-item">
-                                    <label>Kategori</label>
-                                    <div>{tool.category}</div>
-                                </div>
-                                <div className="scan-pdf-spec-item">
-                                    <label>Kondisi</label>
-                                    <div>{tool.condition}</div>
-                                </div>
-                                <div className="scan-pdf-spec-item">
-                                    <label>Status</label>
-                                    <div>{tool.status}</div>
-                                </div>
-                            </div>
-
-                            <div className="scan-pdf-description">
-                                <label>Deskripsi Alat</label>
-                                <p>{tool.description || 'Tidak ada deskripsi tambahan.'}</p>
-                            </div>
+                    {/* IMAGE */}
+                    {tool.image && (
+                        <div className="scan-image-wrapper">
+                            <img src={tool.image} alt={tool.name} />
                         </div>
+                    )}
 
-                        {/* 2. SOP */}
-                        {tool.sop && tool.sop.length > 0 && (
-                            <div className="scan-pdf-sop">
-                                <h3>SOP / Langkah Penggunaan</h3>
-                                <div className="scan-pdf-sop-grid">
-                                    {tool.sop.map((step, idx) => (
-                                        <div key={idx} className="scan-pdf-sop-step">
-                                            <span className="step-number">{idx + 1}</span>
-                                            <p>{step}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                    {/* SPESIFIKASI ALAT */}
+                    <div className="scan-section">
+                        <h2 className="scan-section-title">📋 Spesifikasi Alat</h2>
+                        <table className="scan-spec-table">
+                            <tbody>
+                                <tr><td className="scan-spec-label">Nama Alat</td><td>{tool.name}</td></tr>
+                                <tr><td className="scan-spec-label">Kategori</td><td>{tool.category}</td></tr>
+                                <tr><td className="scan-spec-label">Jurusan</td><td>{tool.jurusan}</td></tr>
+                                <tr><td className="scan-spec-label">Kondisi</td><td>{tool.condition}</td></tr>
+                                <tr><td className="scan-spec-label">Status</td><td>{tool.status}</td></tr>
+                                <tr><td className="scan-spec-label">Tanggal Pembelian</td><td>{tool.purchaseDate}</td></tr>
+                            </tbody>
+                        </table>
                     </div>
 
-                    {/* QR Footer */}
-                    <footer className="scan-pdf-footer">
-                        <div className="scan-pdf-qr-block">
-                            <QRCodeCanvas value={qrUrl} size={100} />
-                            <p>Scan untuk info terbaru & SOP digital</p>
+                    {/* SOP */}
+                    {tool.sop && tool.sop.length > 0 && (
+                        <div className="scan-section">
+                            <h2 className="scan-section-title">📖 SOP - Langkah Penggunaan</h2>
+                            <div className="scan-sop-list">
+                                {tool.sop.map((step, idx) => (
+                                    <div key={idx} className="scan-sop-item">
+                                        <span className="scan-sop-number">{idx + 1}</span>
+                                        <p>{step}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        <div className="scan-pdf-meta">
-                            <p>Dibuat: {new Date(tool.createdAt).toLocaleDateString('id-ID')}</p>
-                            <p>Lokasi: Bengkel {tool.jurusan}</p>
-                        </div>
+                    )}
+
+                    {/* FOOTER */}
+                    <footer className="scan-footer-v2">
+                        <p>Dokumen ini di-generate otomatis oleh sistem BengkelQR</p>
+                        <p>Tanggal cetak: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                     </footer>
                 </div>
 
-                {/* 3. TOMBOL DOWNLOAD (Paling Bawah) */}
+                {/* DOWNLOAD BUTTON */}
                 <div className="no-print" style={{ textAlign: 'center', marginTop: '20px', paddingBottom: '40px' }}>
-                    <button onClick={handlePrint} className="btn btn-primary" style={{ padding: '12px 30px', fontSize: '1rem' }}>
+                    <button onClick={handlePrint} className="btn btn-primary scan-download-btn">
                         <Download size={18} /> Download / Print PDF
                     </button>
                 </div>
