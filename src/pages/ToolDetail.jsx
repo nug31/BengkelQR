@@ -44,6 +44,7 @@ const ToolDetail = () => {
         return (
             <div className="layout scan-pdf-container">
                 <div className="scan-pdf-card">
+                    {/* Header Brand */}
                     <header className="scan-pdf-header">
                         <div className="scan-pdf-brand">
                             <Wrench size={32} />
@@ -52,52 +53,45 @@ const ToolDetail = () => {
                                 <p>Sistem Manajemen Inventaris Alat</p>
                             </div>
                         </div>
-                        <div className="no-print">
-                            <button onClick={handlePrint} className="btn btn-primary">
-                                <Download size={18} /> Download/Print PDF
-                            </button>
-                        </div>
                     </header>
 
+                    {/* 1. SPESIFIKASI ALAT */}
                     <div className="scan-pdf-content">
-                        <div className="scan-pdf-main-row">
+                        {tool.image && (
                             <div className="scan-pdf-image-section">
-                                {tool.image ? (
-                                    <img src={tool.image} alt={tool.name} className="scan-pdf-image" />
-                                ) : (
-                                    <div className="scan-pdf-photo-placeholder">No Image</div>
-                                )}
+                                <img src={tool.image} alt={tool.name} className="scan-pdf-image" />
+                            </div>
+                        )}
+
+                        <div style={{ padding: '25px 35px' }}>
+                            <h1 style={{ fontSize: '1.6rem', fontWeight: 700, margin: '0 0 20px 0', color: 'var(--text-primary)' }}>{tool.name}</h1>
+
+                            <div className="scan-pdf-specs">
+                                <div className="scan-pdf-spec-item">
+                                    <label>Jurusan</label>
+                                    <div className="scan-pdf-badge">{tool.jurusan}</div>
+                                </div>
+                                <div className="scan-pdf-spec-item">
+                                    <label>Kategori</label>
+                                    <div>{tool.category}</div>
+                                </div>
+                                <div className="scan-pdf-spec-item">
+                                    <label>Kondisi</label>
+                                    <div>{tool.condition}</div>
+                                </div>
+                                <div className="scan-pdf-spec-item">
+                                    <label>Status</label>
+                                    <div>{tool.status}</div>
+                                </div>
                             </div>
 
-                            <div className="scan-pdf-info-section">
-                                <h1 className="scan-pdf-title">{tool.name}</h1>
-
-                                <div className="scan-pdf-specs">
-                                    <div className="scan-pdf-spec-item">
-                                        <label>Jurusan</label>
-                                        <div className="scan-pdf-badge">{tool.jurusan}</div>
-                                    </div>
-                                    <div className="scan-pdf-spec-item">
-                                        <label>Kategori</label>
-                                        <div>{tool.category}</div>
-                                    </div>
-                                    <div className="scan-pdf-spec-item">
-                                        <label>Kondisi</label>
-                                        <div>{tool.condition}</div>
-                                    </div>
-                                    <div className="scan-pdf-spec-item">
-                                        <label>Status</label>
-                                        <div>{tool.status}</div>
-                                    </div>
-                                </div>
-
-                                <div className="scan-pdf-description">
-                                    <label>Deskripsi Alat</label>
-                                    <p>{tool.description || 'Tidak ada deskripsi tambahan.'}</p>
-                                </div>
+                            <div className="scan-pdf-description">
+                                <label>Deskripsi Alat</label>
+                                <p>{tool.description || 'Tidak ada deskripsi tambahan.'}</p>
                             </div>
                         </div>
 
+                        {/* 2. SOP */}
                         {tool.sop && tool.sop.length > 0 && (
                             <div className="scan-pdf-sop">
                                 <h3>SOP / Langkah Penggunaan</h3>
@@ -113,6 +107,7 @@ const ToolDetail = () => {
                         )}
                     </div>
 
+                    {/* QR Footer */}
                     <footer className="scan-pdf-footer">
                         <div className="scan-pdf-qr-block">
                             <QRCodeCanvas value={qrUrl} size={100} />
@@ -123,6 +118,13 @@ const ToolDetail = () => {
                             <p>Lokasi: Bengkel {tool.jurusan}</p>
                         </div>
                     </footer>
+                </div>
+
+                {/* 3. TOMBOL DOWNLOAD (Paling Bawah) */}
+                <div className="no-print" style={{ textAlign: 'center', marginTop: '20px', paddingBottom: '40px' }}>
+                    <button onClick={handlePrint} className="btn btn-primary" style={{ padding: '12px 30px', fontSize: '1rem' }}>
+                        <Download size={18} /> Download / Print PDF
+                    </button>
                 </div>
             </div>
         );
