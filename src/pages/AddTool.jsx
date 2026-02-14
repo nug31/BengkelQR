@@ -149,8 +149,8 @@ const AddTool = () => {
                                 <option value="TKR">TKR</option>
                                 <option value="TSM">TSM</option>
                                 <option value="Mesin">Teknik Mesin</option>
-                                <option value="Elind">Teknik Elind</option>
-                                <option value="Listrik">Teknik Listrik</option>
+                                <option value="Elind">Elind</option>
+                                <option value="Listrik">Listrik</option>
                                 <option value="Akuntansi">Akuntansi</option>
                                 <option value="Perhotelan">Perhotelan</option>
                                 <option value="TKI">TKI (Teknik Kimia Industri)</option>
