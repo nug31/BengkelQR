@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useInventory } from '../context/InventoryContext';
 import ToolCard from '../components/ToolCard';
+import { useAuth } from '../context/AuthContext';
 import { Search } from 'lucide-react';
 
 const Dashboard = () => {
