@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { LogIn } from 'lucide-react';
+import { Wrench } from 'lucide-react';
 
 const LoginPage = () => {
     const { login } = useAuth();
@@ -22,24 +22,14 @@ const LoginPage = () => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-            <div className="card" style={{ width: '100%', maxWidth: '400px', padding: '30px' }}>
-                <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-                    <div style={{
-                        width: '60px',
-                        height: '60px',
-                        background: 'var(--primary)',
-                        borderRadius: '15px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        margin: '0 auto 15px',
-                        color: 'var(--bg-dark)'
-                    }}>
-                        <LogIn size={30} />
+        <div className="login-page">
+            <div className="login-card">
+                <div style={{ textAlign: 'center' }}>
+                    <div className="login-logo">
+                        <Wrench size={30} />
                     </div>
-                    <h1 className="text-xl">BengkelQR Login</h1>
-                    <p className="text-muted">Masuk ke sistem manajemen alat</p>
+                    <h1 className="login-title">BengkelQR</h1>
+                    <p className="login-subtitle">Masuk ke sistem manajemen alat</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -64,9 +54,9 @@ const LoginPage = () => {
                         />
                     </div>
 
-                    {error && <div style={{ color: 'var(--accent-danger)', marginBottom: '15px', fontSize: '0.9rem' }}>{error}</div>}
+                    {error && <div className="login-error">{error}</div>}
 
-                    <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={loading}>
+                    <button type="submit" className="login-btn" disabled={loading}>
                         {loading ? 'Logging in...' : 'Login'}
                     </button>
                 </form>

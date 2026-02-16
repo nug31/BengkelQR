@@ -1,5 +1,5 @@
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Wrench, PlusCircle, LogOut } from 'lucide-react';
+import { Wrench, PlusCircle, LogOut, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Header = () => {
@@ -16,23 +16,24 @@ const Header = () => {
     return (
         <nav className="navbar">
             <Link to="/" className="nav-brand">
-                <Wrench size={24} />
-                <span>WorkshopQR</span>
+                <Wrench size={22} />
+                <span className="nav-link-text">BengkelQR</span>
             </Link>
             <div className="nav-links">
                 {jurusan && (
-                    <span className="badge badge-good no-print" style={{ fontSize: '0.75rem', padding: '4px 10px' }}>
+                    <span className="badge badge-good no-print" style={{ fontSize: '0.7rem', padding: '4px 10px' }}>
                         {isAdmin ? 'Admin' : jurusan}
                     </span>
                 )}
                 <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
-                    Dashboard
+                    <LayoutDashboard size={18} />
+                    <span className="nav-link-text" style={{ marginLeft: '6px' }}>Dashboard</span>
                 </Link>
-                <Link to="/add" className={`btn btn-primary ${location.pathname === '/add' ? 'active' : ''}`} style={{ color: 'var(--bg-dark)' }}>
+                <Link to="/add" className={`btn btn-primary ${location.pathname === '/add' ? 'active' : ''}`} style={{ color: 'white' }}>
                     <PlusCircle size={18} />
-                    Add Tool
+                    <span className="nav-link-text">Add Tool</span>
                 </Link>
-                <button onClick={handleLogout} className="btn btn-outline" style={{ padding: '8px', border: 'none' }} title="Logout">
+                <button onClick={handleLogout} className="btn btn-outline" style={{ padding: '8px 10px' }} title="Logout">
                     <LogOut size={18} />
                 </button>
             </div>
@@ -44,6 +45,12 @@ const Layout = ({ children }) => {
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const isScanView = query.get('view') === 'scan';
+    const isLoginPage = location.pathname === '/login';
+
+    // Login page has its own full-viewport layout
+    if (isLoginPage) {
+        return <>{children}</>;
+    }
 
     return (
         <div>
