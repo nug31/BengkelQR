@@ -34,6 +34,13 @@ const ToolCard = ({ tool, index = 0 }) => {
 
                 <h3 className="tool-card-title">{tool.name}</h3>
 
+                {tool.status === 'In Use' && tool.currentBorrower && (
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#f59e0b' }} />
+                        <span>Dipinjam: <strong>{tool.currentBorrower.name}</strong></span>
+                    </div>
+                )}
+
                 <div className="tool-card-tags">
                     <span className={`jurusan-chip jurusan-chip-${tool.jurusan}`}>{tool.jurusan}</span>
                     <span className="tool-card-category">{tool.category}</span>

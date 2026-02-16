@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
 import { useAuth } from '../context/AuthContext';
 import { QRCodeCanvas } from 'qrcode.react';
-import { ArrowLeft, Printer, Trash2, QrCode, Edit, Download, Wrench } from 'lucide-react';
+import { ArrowLeft, Printer, Trash2, QrCode, Edit, Download, Wrench, History, User, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 
 const ToolDetail = () => {
     const { id } = useParams();
@@ -12,14 +12,33 @@ const ToolDetail = () => {
     const query = new URLSearchParams(location.search);
     const isScanView = query.get('view') === 'scan';
 
-    const { getToolById, deleteTool } = useInventory();
+    const { getToolById, deleteTool, borrowTool, returnTool, getBorrowHistory } = useInventory();
     const tool = getToolById(id);
     const [showQR, setShowQR] = useState(false);
+    const [history, setHistory] = useState([]);
+    const [loadingHistory, setLoadingHistory] = useState(true);
+
+    // Borrow Modal State
+    const [showBorrowModal, setShowBorrowModal] = useState(false);
+    const [borrowerData, setBorrowerData] = useState({ name: '', unit: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const qrRef = useRef();
-
     const { getJurusan, isAdmin } = useAuth();
     const userJurusan = getJurusan();
+
+    useEffect(() => {
+        if (tool) {
+            fetchHistory();
+        }
+    }, [id]);
+
+    const fetchHistory = async () => {
+        setLoadingHistory(true);
+        const data = await getBorrowHistory(id);
+        setHistory(data);
+        setLoadingHistory(false);
+    };
 
     // Security: Only owner or admin can edit/delete
     const canManage = isAdmin || (tool?.jurusan === userJurusan);
@@ -38,6 +57,38 @@ const ToolDetail = () => {
     const handlePrint = () => {
         window.print();
     };
+
+    const handleBorrow = async (e) => {
+        e.preventDefault();
+        if (!borrowerData.name || !borrowerData.unit) return;
+
+        setIsSubmitting(true);
+        const result = await borrowTool(id, borrowerData);
+        if (result.success) {
+            setShowBorrowModal(false);
+            setBorrowerData({ name: '', unit: '' });
+            fetchHistory();
+        } else {
+            alert('Gagal meminjam alat. Silakan coba lagi.');
+        }
+        setIsSubmitting(false);
+    };
+
+    const handleReturn = async () => {
+        if (!window.confirm('Konfirmasi pengembalian alat ini?')) return;
+
+        setIsSubmitting(true);
+        const result = await returnTool(id);
+        if (result.success) {
+            fetchHistory();
+        } else {
+            alert('Gagal mengembalikan alat. Silakan coba lagi.');
+        }
+        setIsSubmitting(false);
+    };
+
+    // Current borrower info
+    const currentBorrow = history.find(h => h.status === 'borrowed');
 
     // --- SCAN / PDF VIEW ---
     if (isScanView) {
@@ -118,33 +169,75 @@ const ToolDetail = () => {
         <div className={`detail-container ${showQR ? 'has-qr' : ''}`}>
             <div className={`detail-main ${showQR ? 'no-print' : ''}`}>
                 <div className="minimal-info">
-                    {tool.image && (
-                        <div style={{ marginBottom: '25px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)', maxWidth: '350px' }}>
-                            <img src={tool.image} alt={tool.name} style={{ width: '100%', display: 'block', maxHeight: '250px', objectFit: 'cover' }} />
-                        </div>
-                    )}
+                    <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                        {tool.image && (
+                            <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)', maxWidth: '350px', flex: '1 1 300px' }}>
+                                <img src={tool.image} alt={tool.name} style={{ width: '100%', display: 'block', maxHeight: '300px', objectFit: 'cover' }} />
+                            </div>
+                        )}
 
-                    <h1 className="minimal-title">{tool.name}</h1>
+                        <div style={{ flex: '2 1 300px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                                <h1 className="minimal-title" style={{ margin: 0 }}>{tool.name}</h1>
+                                <span className={`status-badge ${tool.status.toLowerCase().replace(' ', '-')}`}>
+                                    {tool.status === 'In Use' ? <History size={14} /> : <CheckCircle size={14} />}
+                                    {tool.status}
+                                </span>
+                            </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '10px' }}>
-                        <div className="minimal-field">
-                            <label>Jurusan</label>
-                            <p className="minimal-value">{tool.jurusan}</p>
-                        </div>
-                        <div className="minimal-field">
-                            <label>Category</label>
-                            <p className="minimal-value">{tool.category}</p>
-                        </div>
-                    </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '20px', marginBottom: '20px' }}>
+                                <div className="minimal-field">
+                                    <label>Jurusan</label>
+                                    <p className="minimal-value">{tool.jurusan}</p>
+                                </div>
+                                <div className="minimal-field">
+                                    <label>Category</label>
+                                    <p className="minimal-value">{tool.category}</p>
+                                </div>
+                                <div className="minimal-field">
+                                    <label>Condition</label>
+                                    <p className="minimal-value">{tool.condition}</p>
+                                </div>
+                                <div className="minimal-field">
+                                    <label>Purchase Date</label>
+                                    <p className="minimal-value">{tool.purchaseDate}</p>
+                                </div>
+                            </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '10px' }}>
-                        <div className="minimal-field">
-                            <label>Condition</label>
-                            <p className="minimal-value">{tool.condition}</p>
-                        </div>
-                        <div className="minimal-field">
-                            <label>Purchase Date</label>
-                            <p className="minimal-value">{tool.purchaseDate}</p>
+                            {/* CURRENT BORROWER STATUS */}
+                            {tool.status === 'In Use' && currentBorrow && (
+                                <div className="card" style={{ background: 'rgba(245, 158, 11, 0.05)', borderColor: 'rgba(245, 158, 11, 0.2)', marginBottom: '20px', padding: '15px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#f59e0b', marginBottom: '8px', fontWeight: 'bold' }}>
+                                        <AlertCircle size={18} />
+                                        Sedang Dipinjam
+                                    </div>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                        <div>
+                                            <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Peminjam</label>
+                                            <span style={{ fontWeight: '500' }}>{currentBorrow.borrower_name}</span>
+                                        </div>
+                                        <div>
+                                            <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Kelas/Unit</label>
+                                            <span style={{ fontWeight: '500' }}>{currentBorrow.borrower_unit}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* ACTION BUTTONS (Borrow/Return) */}
+                            {canManage && (
+                                <div style={{ display: 'flex', gap: '10px', marginBottom: '25px' }}>
+                                    {tool.status === 'Available' ? (
+                                        <button onClick={() => setShowBorrowModal(true)} className="btn btn-primary" style={{ flex: 1 }}>
+                                            <Wrench size={18} /> Pinjam Alat
+                                        </button>
+                                    ) : tool.status === 'In Use' ? (
+                                        <button onClick={handleReturn} className="btn btn-primary" style={{ flex: 1, background: '#10b981' }}>
+                                            <CheckCircle size={18} /> Kembalikan Alat
+                                        </button>
+                                    ) : null}
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -156,7 +249,7 @@ const ToolDetail = () => {
                     </div>
 
                     {tool.sop && tool.sop.length > 0 && (
-                        <div className="minimal-field" style={{ marginTop: '10px' }}>
+                        <div className="minimal-field" style={{ marginTop: '20px' }}>
                             <label>SOP Penggunaan</label>
                             <ol style={{ paddingLeft: '20px', marginTop: '10px', color: 'var(--text-primary)' }}>
                                 {tool.sop.map((step, idx) => (
@@ -165,10 +258,66 @@ const ToolDetail = () => {
                             </ol>
                         </div>
                     )}
+
+                    {/* BORROW HISTORY SECTION */}
+                    <div style={{ marginTop: '40px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+                            <History size={20} className="text-muted" />
+                            <h2 style={{ fontSize: '1.25rem', margin: 0 }}>Riwayat Peminjaman</h2>
+                        </div>
+
+                        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+                                <thead style={{ background: 'rgba(255,255,255,0.03)' }}>
+                                    <tr>
+                                        <th style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)' }}>Peminjam</th>
+                                        <th style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)' }}>Pinjam</th>
+                                        <th style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)' }}>Kembali</th>
+                                        <th style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)' }}>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loadingHistory ? (
+                                        <tr><td colSpan="4" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Memuat riwayat...</td></tr>
+                                    ) : history.length === 0 ? (
+                                        <tr><td colSpan="4" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Belum ada riwayat peminjaman.</td></tr>
+                                    ) : (
+                                        history.slice(0, 5).map((log) => (
+                                            <tr key={log.id}>
+                                                <td style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)' }}>
+                                                    <div style={{ fontWeight: '500' }}>{log.borrower_name}</div>
+                                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{log.borrower_unit}</div>
+                                                </td>
+                                                <td style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                                        <Clock size={12} className="text-muted" />
+                                                        {new Date(log.borrow_date).toLocaleDateString('id-ID')}
+                                                    </div>
+                                                </td>
+                                                <td style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)' }}>
+                                                    {log.return_date ? (
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                                            <Clock size={12} className="text-muted" />
+                                                            {new Date(log.return_date).toLocaleDateString('id-ID')}
+                                                        </div>
+                                                    ) : '-'}
+                                                </td>
+                                                <td style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)' }}>
+                                                    <span className={`jurusan-chip ${log.status === 'borrowed' ? 'status-in-use' : 'status-available'}`} style={{ fontSize: '0.7rem' }}>
+                                                        {log.status === 'borrowed' ? 'Masih Dipinjam' : 'Dikembalikan'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
                 {!isScanView && (
-                    <div className="no-print mt-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', paddingTop: '30px', borderTop: '1px solid var(--border)' }}>
+                    <div className="no-print mt-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', paddingTop: '30px', borderTop: '1px solid var(--border)', marginTop: '40px' }}>
                         <button onClick={() => navigate('/')} className="btn btn-outline">
                             <ArrowLeft size={16} /> Dashboard
                         </button>
@@ -216,8 +365,62 @@ const ToolDetail = () => {
                     </div>
                 </div>
             )}
+
+            {/* BORROW MODAL */}
+            {showBorrowModal && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000 }}>
+                    <div className="card" style={{ width: '90%', maxWidth: '400px', animation: 'fadeInUp 0.3s ease-out' }}>
+                        <h2 className="text-xl" style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <Wrench size={24} className="text-accent" />
+                            Form Peminjaman
+                        </h2>
+                        <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '20px' }}>
+                            Silakan isi data peminjam untuk alat <strong>{tool.name}</strong>.
+                        </p>
+
+                        <form onSubmit={handleBorrow}>
+                            <div className="form-group">
+                                <label>Nama Peminjam</label>
+                                <div style={{ position: 'relative' }}>
+                                    <User size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                    <input
+                                        type="text"
+                                        required
+                                        placeholder="Nama Lengkap"
+                                        style={{ paddingLeft: '40px' }}
+                                        value={borrowerData.name}
+                                        onChange={e => setBorrowerData({ ...borrowerData, name: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label>Unit / Kelas</label>
+                                <div style={{ position: 'relative' }}>
+                                    <History size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                    <input
+                                        type="text"
+                                        required
+                                        placeholder="Contoh: XI TKR 1 / Bengkel"
+                                        style={{ paddingLeft: '40px' }}
+                                        value={borrowerData.unit}
+                                        onChange={e => setBorrowerData({ ...borrowerData, unit: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '10px', marginTop: '25px' }}>
+                                <button type="button" onClick={() => setShowBorrowModal(false)} className="btn btn-outline" style={{ flex: 1 }}>Batal</button>
+                                <button type="submit" className="btn btn-primary" style={{ flex: 2 }} disabled={isSubmitting}>
+                                    {isSubmitting ? 'Memproses...' : 'Konfirmasi Pinjam'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
 export default ToolDetail;
+
