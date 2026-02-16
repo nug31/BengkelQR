@@ -129,6 +129,7 @@ const ToolDetail = () => {
                                 <tr><td className="scan-spec-label">Kondisi</td><td>{tool.condition}</td></tr>
                                 <tr><td className="scan-spec-label">Status</td><td>{tool.status}</td></tr>
                                 <tr><td className="scan-spec-label">Tanggal Pembelian</td><td>{tool.purchaseDate}</td></tr>
+                                <tr><td className="scan-spec-label">Deskripsi</td><td>{tool.description || '-'}</td></tr>
                             </tbody>
                         </table>
                     </div>
