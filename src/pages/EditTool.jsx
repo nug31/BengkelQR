@@ -4,6 +4,21 @@ import { useInventory } from '../context/InventoryContext';
 import { useAuth } from '../context/AuthContext';
 import { Save, ArrowLeft, Plus, Trash2 } from 'lucide-react';
 
+// Kategori umum untuk semua jurusan
+const commonCategories = ['Hand Tools', 'Power Tools', 'Measuring', 'Safety Gear', 'Consumables', 'Other'];
+
+// Kategori spesifik per jurusan
+const jurusanCategories = {
+    TKR: [...commonCategories, 'Automotive Diagnostic', 'Automotive Emission Analyzer', 'Engine Tools', 'Body Repair Tools'],
+    TSM: [...commonCategories, 'Motorcycle Tools', 'Engine Tools', 'Tire & Wheel Tools'],
+    Mesin: [...commonCategories, 'CNC Tools', 'Lathe Tools', 'Milling Tools', 'Welding Equipment', 'Grinding Tools'],
+    Elind: [...commonCategories, 'PLC & Controller', 'Electrical Panel', 'Pneumatic Tools', 'Hydraulic Tools', 'Robotics'],
+    Listrik: [...commonCategories, 'Wiring Tools', 'Electrical Testing', 'Panel Tools', 'Installation Tools'],
+    Akuntansi: ['Office Equipment', 'Computer & Peripherals', 'Calculator', 'Filing Equipment', 'Other'],
+    Perhotelan: ['Kitchen Equipment', 'Housekeeping Tools', 'F&B Equipment', 'Laundry Equipment', 'Front Office Equipment', 'Other'],
+    TKI: [...commonCategories, 'Lab Equipment', 'Chemical Tools', 'Distillation Equipment', 'Testing & Analysis'],
+};
+
 const EditTool = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -23,11 +38,24 @@ const EditTool = () => {
         sop: ['']
     });
     const [imageError, setImageError] = useState('');
+    const [initialLoaded, setInitialLoaded] = useState(false);
+
+    // Get categories for current jurusan
+    const availableCategories = jurusanCategories[formData.jurusan] || commonCategories;
+
+    // Reset category when jurusan changes (but not on initial load)
+    useEffect(() => {
+        if (initialLoaded) {
+            const cats = jurusanCategories[formData.jurusan] || commonCategories;
+            if (!cats.includes(formData.category)) {
+                setFormData(prev => ({ ...prev, category: cats[0] }));
+            }
+        }
+    }, [formData.jurusan, initialLoaded]);
 
     useEffect(() => {
         const tool = getToolById(id);
         if (tool) {
-            // Security check: Only allow editing if tool belongs to user's department or is admin
             if (!isAdmin && tool.jurusan !== userJurusan) {
                 navigate('/');
                 return;
@@ -44,6 +72,7 @@ const EditTool = () => {
                 image: tool.image || null,
                 sop: tool.sop && tool.sop.length ? tool.sop : ['']
             });
+            setInitialLoaded(true);
         } else {
             navigate('/');
         }
@@ -145,19 +174,6 @@ const EditTool = () => {
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                         <div className="form-group">
-                            <label>Category</label>
-                            <select name="category" value={formData.category} onChange={handleChange}>
-                                <option>Hand Tools</option>
-                                <option>Power Tools</option>
-                                <option>Measuring</option>
-                                <option>Safety Gear</option>
-                                <option>Consumables</option>
-                                <option>Other</option>
-                                <option>Automotive Emission Analyzer</option>
-                            </select>
-                        </div>
-
-                        <div className="form-group">
                             <label>Jurusan</label>
                             <select
                                 name="jurusan"
@@ -173,6 +189,15 @@ const EditTool = () => {
                                 <option value="Akuntansi">Akuntansi</option>
                                 <option value="Perhotelan">Perhotelan</option>
                                 <option value="TKI">TKI (Teknik Kimia Industri)</option>
+                            </select>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Category</label>
+                            <select name="category" value={formData.category} onChange={handleChange}>
+                                {availableCategories.map(cat => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
