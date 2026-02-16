@@ -100,7 +100,6 @@ const ToolDetail = () => {
                     {/* FOOTER */}
                     <footer className="scan-footer-v2">
                         <p>Dokumen ini di-generate otomatis oleh sistem BengkelQR</p>
-                        <p>Tanggal cetak: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                     </footer>
                 </div>
 
