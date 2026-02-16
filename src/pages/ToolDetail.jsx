@@ -291,14 +291,14 @@ const ToolDetail = () => {
                                                 <td style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                                                         <Clock size={12} className="text-muted" />
-                                                        {new Date(log.borrow_date).toLocaleDateString('id-ID')}
+                                                        {new Date(log.borrow_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                                     </div>
                                                 </td>
                                                 <td style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)' }}>
                                                     {log.return_date ? (
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                                                             <Clock size={12} className="text-muted" />
-                                                            {new Date(log.return_date).toLocaleDateString('id-ID')}
+                                                            {new Date(log.return_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                                         </div>
                                                     ) : '-'}
                                                 </td>
