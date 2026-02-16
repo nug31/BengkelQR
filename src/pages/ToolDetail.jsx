@@ -266,8 +266,8 @@ const ToolDetail = () => {
                             <h2 style={{ fontSize: '1.25rem', margin: 0 }}>Riwayat Peminjaman</h2>
                         </div>
 
-                        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+                        <div className="table-responsive">
+                            <table className="card" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem', minWidth: '600px', padding: 0, overflow: 'hidden' }}>
                                 <thead style={{ background: 'rgba(255,255,255,0.03)' }}>
                                     <tr>
                                         <th style={{ padding: '12px 20px', borderBottom: '1px solid var(--border)' }}>Peminjam</th>
@@ -368,8 +368,8 @@ const ToolDetail = () => {
 
             {/* BORROW MODAL */}
             {showBorrowModal && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000 }}>
-                    <div className="card" style={{ width: '90%', maxWidth: '400px', animation: 'fadeInUp 0.3s ease-out' }}>
+                <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000 }}>
+                    <div className="card modal-content" style={{ width: '90%', maxWidth: '400px', animation: 'fadeInUp 0.3s ease-out' }}>
                         <h2 className="text-xl" style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <Wrench size={24} className="text-accent" />
                             Form Peminjaman

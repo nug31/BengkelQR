@@ -115,16 +115,18 @@ const Dashboard = () => {
 
             {/* Department Filter */}
             {isAdmin && (
-                <div className="dept-nav">
-                    {jurusans.map(j => (
-                        <button
-                            key={j.id}
-                            className={`dept-chip ${selectedJurusan === j.id ? 'active' : ''}`}
-                            onClick={() => setSelectedJurusan(j.id)}
-                        >
-                            {j.label}
-                        </button>
-                    ))}
+                <div className="dept-nav-container" style={{ position: 'relative', marginBottom: '24px' }}>
+                    <div className="dept-nav">
+                        {jurusans.map(j => (
+                            <button
+                                key={j.id}
+                                className={`dept-chip ${selectedJurusan === j.id ? 'active' : ''}`}
+                                onClick={() => setSelectedJurusan(j.id)}
+                            >
+                                {j.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             )}
 

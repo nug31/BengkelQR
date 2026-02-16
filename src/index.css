@@ -149,9 +149,27 @@ body {
   padding: 0 24px;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   backdrop-filter: blur(20px);
   box-shadow: 0 1px 30px rgba(59, 130, 246, 0.06), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 4px;
 }
 
 .nav-brand {
@@ -268,6 +286,19 @@ body {
 /* ===== FORMS ===== */
 .form-group {
   margin-bottom: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 }
 
 label {
@@ -1208,6 +1239,37 @@ textarea:focus {
   .login-card {
     padding: 30px 24px;
     border-radius: 20px;
+  }
+
+  .minimal-info>div {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+
+  .minimal-info img {
+    max-width: 100% !important;
+    max-height: 250px !important;
+  }
+
+  .minimal-title {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .status-badge {
+    margin: 0 auto 10px;
+  }
+
+  .modal-overlay {
+    align-items: flex-end !important;
+    /* Pull modal to bottom on mobile for easier thumb reach */
+  }
+
+  .modal-content {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 }
 

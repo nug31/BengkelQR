@@ -150,7 +150,7 @@ const AddTool = () => {
                         />
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                    <div className="form-grid">
                         <div className="form-group">
                             <label>Jurusan</label>
                             <select
@@ -180,7 +180,7 @@ const AddTool = () => {
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                    <div className="form-grid">
                         <div className="form-group">
                             <label>Condition</label>
                             <select name="condition" value={formData.condition} onChange={handleChange}>
