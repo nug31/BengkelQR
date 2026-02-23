@@ -27,12 +27,13 @@ const AddTool = () => {
 
     const [formData, setFormData] = useState({
         name: '',
+        code: '',
         category: '',
         jurusan: userJurusan || 'TKR',
         condition: 'Good',
         status: 'Available',
         description: '',
-        purchaseDate: new Date().toISOString().split('T')[0],
+        purchaseYear: new Date().getFullYear().toString(),
         image: null,
         sop: ['']
     });
@@ -150,6 +151,17 @@ const AddTool = () => {
                         />
                     </div>
 
+                    <div className="form-group">
+                        <label>Kode Alat</label>
+                        <input
+                            type="text"
+                            name="code"
+                            value={formData.code}
+                            onChange={handleChange}
+                            placeholder="e.g. TKR-001"
+                        />
+                    </div>
+
                     <div className="form-grid">
                         <div className="form-group">
                             <label>Jurusan</label>
@@ -192,12 +204,15 @@ const AddTool = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Purchase Date</label>
+                            <label>Tahun Pembelian</label>
                             <input
-                                type="date"
-                                name="purchaseDate"
-                                value={formData.purchaseDate}
+                                type="number"
+                                name="purchaseYear"
+                                min="1990"
+                                max={new Date().getFullYear()}
+                                value={formData.purchaseYear}
                                 onChange={handleChange}
+                                placeholder="e.g. 2023"
                             />
                         </div>
                     </div>

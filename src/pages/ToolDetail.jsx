@@ -124,11 +124,12 @@ const ToolDetail = () => {
                         <table className="scan-spec-table">
                             <tbody>
                                 <tr><td className="scan-spec-label">Nama Alat</td><td>{tool.name}</td></tr>
+                                {tool.code && <tr><td className="scan-spec-label">Kode Alat</td><td>{tool.code}</td></tr>}
                                 <tr><td className="scan-spec-label">Kategori</td><td>{tool.category}</td></tr>
                                 <tr><td className="scan-spec-label">Jurusan</td><td>{tool.jurusan}</td></tr>
                                 <tr><td className="scan-spec-label">Kondisi</td><td>{tool.condition}</td></tr>
                                 <tr><td className="scan-spec-label">Status</td><td>{tool.status}</td></tr>
-                                <tr><td className="scan-spec-label">Tanggal Pembelian</td><td>{tool.purchaseDate}</td></tr>
+                                <tr><td className="scan-spec-label">Tahun Pembelian</td><td>{tool.purchaseYear || (tool.purchaseDate ? tool.purchaseDate.substring(0, 4) : '-')}</td></tr>
                                 <tr><td className="scan-spec-label">Deskripsi</td><td>{tool.description || '-'}</td></tr>
                             </tbody>
                         </table>
@@ -195,13 +196,19 @@ const ToolDetail = () => {
                                     <label>Category</label>
                                     <p className="minimal-value">{tool.category}</p>
                                 </div>
+                                {tool.code && (
+                                    <div className="minimal-field">
+                                        <label>Kode Alat</label>
+                                        <p className="minimal-value">{tool.code}</p>
+                                    </div>
+                                )}
                                 <div className="minimal-field">
                                     <label>Condition</label>
                                     <p className="minimal-value">{tool.condition}</p>
                                 </div>
                                 <div className="minimal-field">
-                                    <label>Purchase Date</label>
-                                    <p className="minimal-value">{tool.purchaseDate}</p>
+                                    <label>Tahun Pembelian</label>
+                                    <p className="minimal-value">{tool.purchaseYear || (tool.purchaseDate ? tool.purchaseDate.substring(0, 4) : '-')}</p>
                                 </div>
                             </div>
 
