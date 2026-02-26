@@ -34,6 +34,7 @@ export const InventoryProvider = ({ children }) => {
           status: t.status,
           description: t.description,
           purchaseDate: t.purchase_date,
+          purchaseYear: t.purchase_date ? t.purchase_date.substring(0, 4) : '',
           image: t.image,
           sop: t.sop || [],
           createdAt: t.created_at,
@@ -62,7 +63,7 @@ export const InventoryProvider = ({ children }) => {
         condition: toolData.condition,
         status: toolData.status,
         description: toolData.description,
-        purchase_date: toolData.purchaseDate,
+        purchase_date: toolData.purchaseYear ? `${toolData.purchaseYear}-01-01` : toolData.purchaseDate,
         image: toolData.image,
         sop: toolData.sop || []
       }])
@@ -81,6 +82,7 @@ export const InventoryProvider = ({ children }) => {
         status: t.status,
         description: t.description,
         purchaseDate: t.purchase_date,
+        purchaseYear: t.purchase_date ? t.purchase_date.substring(0, 4) : '',
         image: t.image,
         sop: t.sop || [],
         createdAt: t.created_at
@@ -99,7 +101,7 @@ export const InventoryProvider = ({ children }) => {
         condition: toolData.condition,
         status: toolData.status,
         description: toolData.description,
-        purchase_date: toolData.purchaseDate,
+        purchase_date: toolData.purchaseYear ? `${toolData.purchaseYear}-01-01` : toolData.purchaseDate,
         image: toolData.image,
         sop: toolData.sop || []
       })
